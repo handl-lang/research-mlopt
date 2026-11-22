@@ -27,11 +27,14 @@
 #
 # Env knobs:
 #     MLOPT_GATES_LANE
+#         `static` — the fast lane: static gates only, no suite.  This
+#         is what the per-push bupha gate runs (ci.sh); the suite
+#         lanes moved to the mlopt-nightly peregrin campaign.
 #         `dev` (default) — the day-to-day gate: static gates + the suite
 #         with `-m "not slow"` (the minutes-scale soak tests are excluded).
 #         `full` — everything, once (no coverage stage: the floors moved
-#         to the kit repos with the packages).  CI/release runs should
-#         use `full`.
+#         to the kit repos with the packages).  The nightly campaign
+#         runs `full`.
 #     MLOPT_GATES_NP
 #         xdist worker count for the suite stage.  Default 1 (serial) —
 #         see the measured serial-vs-parallel table in AGENTS.md.  Set to
@@ -56,7 +59,7 @@ PY=.venv/bin/python
 # arm completed, so it stays serial; opt in with MLOPT_GATES_NP=2.  See
 # AGENTS.md for the measured table and the tests that dominate the wall.
 NP="${MLOPT_GATES_NP:-1}"
-LANE="${MLOPT_GATES_LANE:-dev}"   # dev | full
+LANE="${MLOPT_GATES_LANE:-dev}"   # static | dev | full
 
 # Keep Inductor's kernel cache pinned into the repo cache dir so repeat
 # runs reuse compiled kernels instead of recompiling from scratch (the
@@ -95,6 +98,12 @@ stage "import-linter"   -- .venv/bin/lint-imports
 stage "bandit"          -- .venv/bin/bandit -c .bandit.yaml -r packages
 stage "semgrep"         -- .venv/bin/semgrep --config .semgrep.yml packages
 stage "radon ratchet"   -- $PY scripts/radon_ratchet.py
+
+if [[ "$LANE" == "static" ]]; then
+    echo "== static lane — suite skipped (mlopt-nightly owns it) =="
+    echo "== all gates green in $((SECONDS - t0))s =="
+    exit 0
+fi
 
 if [[ "$LANE" == "full" ]]; then
     echo "== test suite (everything, once) =="

@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
-# bupha-style gate entry for the Rust arm (the Python gates are
-# scripts/gates.sh): cargo build + test of the standalone experiments
-# crate + the experiment's certification leg (no timing).
+# bupha entry point (runner.kind = "script", cmd = "./ci.sh") — the
+# whole per-push gate: Python static gates (scripts/gates.sh `static`
+# lane) + the Rust arm (cargo build + test of the standalone
+# experiments crate + the certification leg, no timing). The Python
+# *suite* lanes (dev/full) run in the mlopt-nightly peregrin
+# campaign — tens-of-minutes serial doesn't belong on the push path.
 set -euo pipefail
 
 # ---------------------------------------------------------------------------
@@ -72,6 +75,13 @@ ensure_siblings() {
 }
 
 ensure_siblings
+
+# Python static gates — ruff/ty/vulture/import-linter/bandit/semgrep/
+# radon via gates.sh's `static` lane (needs .venv; uv cache makes
+# repeat syncs cheap). The suite itself is mlopt-nightly's job.
+export PATH="$HOME/.local/bin:$PATH"
+uv sync --frozen
+MLOPT_GATES_LANE=static bash scripts/gates.sh
 
 # Cross-repo git deps resolve over ssh/cli locally; the insteadOf env
 # (~/.cache/devin/handl_deps.env) maps org URLs to sibling checkouts.
