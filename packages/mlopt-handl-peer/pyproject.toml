@@ -6,6 +6,7 @@ build-backend = "maturin"
 name = "mlopt-handl-peer"
 version = "0.1.0"
 description = "Spike: mlopt calls handl's language loader and rewrite engine"
+license = "MIT"
 requires-python = ">=3.11"
 
 [tool.maturin]

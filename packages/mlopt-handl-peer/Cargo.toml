@@ -3,6 +3,7 @@ name = "mlopt-handl-peer"
 version = "0.1.0"
 edition = "2021"
 description = "Spike: mlopt calls handl's language loader and rewrite engine (local-only path deps)"
+license = "MIT"
 
 [lib]
 name = "mlopt_handl_peer"
