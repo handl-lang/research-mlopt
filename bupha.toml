@@ -5,7 +5,7 @@
 
 [[repos]]
 name = "handl-lang/research-mlopt"
-dir = "/home/luis/GitHub/handl-lang/research-mlopt"
+dir = "~//GitHub/handl-lang/research-mlopt"
 branch = "refs/heads/main"
   [repos.runner]
   kind = "script"
