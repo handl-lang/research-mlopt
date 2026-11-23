@@ -55,14 +55,14 @@ exclude = [
 #
 # # The engines live one crate per repo post-ADR-0128 (the `hnl-engine-*`
 # # crates, single-crate-at-root layout like the `lib-*` ports):
-# [patch."https://github.com/handl-lang/engine-exec"]
-# hnl-engine-exec = { path = "/path/to/engine-exec" }
-# [patch."https://github.com/handl-lang/engine-lex-pattern"]
-# hnl-engine-lex-pattern = { path = "/path/to/engine-lex-pattern" }
-# [patch."https://github.com/handl-lang/engine-parse-pratt"]
-# hnl-engine-parse-pratt = { path = "/path/to/engine-parse-pratt" }
-# [patch."https://github.com/handl-lang/engine-exec-tree-walk"]
-# hnl-engine-exec-tree-walk = { path = "/path/to/engine-exec-tree-walk" }
+# [patch."https://github.com/handl-lang/exec"]
+# hnl-exec = { path = "/path/to/exec" }
+# [patch."https://github.com/handl-lang/tool-lex-pattern"]
+# hnl-tool-lex-pattern = { path = "/path/to/tool-lex-pattern" }
+# [patch."https://github.com/handl-lang/tool-parse-pratt"]
+# hnl-tool-parse-pratt = { path = "/path/to/tool-parse-pratt" }
+# [patch."https://github.com/handl-lang/exec-tree-walk"]
+# hnl-exec-tree-walk = { path = "/path/to/exec-tree-walk" }
 # # …plus whatever the transitive tree pulls (hnl-engine{,-lex,-parse,
 # # -exec-bytecode,-lint,-transform{,-rewrite},-typecheck},
 # # handl-plugin-lib-char-native, handl-kit-{data,arrow-lower},

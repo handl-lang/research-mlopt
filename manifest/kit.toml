@@ -59,10 +59,10 @@ repo = "handl-lang/engine-{exec,lex-pattern,parse-pratt,exec-tree-walk}"
 float = "main"
 kind = "cargo-git"
 crates = [
-    "hnl-engine-exec",
-    "hnl-engine-lex-pattern",
-    "hnl-engine-parse-pratt",
-    "hnl-engine-exec-tree-walk",
+    "hnl-exec",
+    "hnl-tool-lex-pattern",
+    "hnl-tool-parse-pratt",
+    "hnl-exec-tree-walk",
 ]
 role = "the smallest honest engine set — data lex / pratt parse / tree-walk eval (post-ADR-0128 these live one crate per repo as `hnl-engine-*`, renamed from `handl-plugin-engine-*`)."
 

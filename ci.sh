@@ -11,7 +11,7 @@ set -euo pipefail
 # Layout plumbing - bupha runs this gate in a detached worktree of the
 # pushed sha, where the relative sibling paths in
 # packages/mlopt-handl-peer/Cargo.toml (`../../../kernel`,
-# `../../../kit-prelude-lang`, `../../../engine-transform*`) resolve
+# `../../../kit-prelude-lang`, `../../../tool-transform*`) resolve
 # against the worktree's PARENT, not this repo's parent. Recreate the
 # sibling layout there before cargo runs: ../research-mlopt -> this worktree
 # (the sha under test), every other ~/GitHub/handl-lang/* -> its real

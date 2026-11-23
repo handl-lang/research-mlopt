@@ -21,9 +21,9 @@ on the shipped `vocab/` projection (`chunk_single` deletes any
 differential never observes this because it only replays applications
 mlopt already accepted.
 
-## 1. What `engine-transform-rewrite` consumes
+## 1. What `tool-transform-rewrite` consumes
 
-The engine (`hnl-engine-transform-rewrite`, ADR-0094) interprets
+The engine (`hnl-tool-transform-rewrite`, ADR-0094) interprets
 `TransformDef` data — it is **not** a pattern-matching rewriter in the
 e-graph sense:
 
@@ -50,7 +50,7 @@ e-graph sense:
   the condition vocabulary at all), no subtree equality, no
   value/shape reasoning.
 - Traversal: `BottomUp` (default), `TopDown`, `Fixpoint{max}`
-  (`engine-transform-rewrite/src/lib.rs:71`) — iterate-until-stable,
+  (`tool-transform-rewrite/src/lib.rs:71`) — iterate-until-stable,
   **not** e-graph saturation: no congruence closure, no e-classes, no
   cost model, no multi-directional search.  `apply_rule` is the
   surgical single-site door the peer uses; `run_pass` rewrites a whole

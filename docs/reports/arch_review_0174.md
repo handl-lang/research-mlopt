@@ -84,7 +84,7 @@ Tensor ops are **not** yet a `Language` fragment — P1 is pending P0.5, and P0.
 | `gamekit` (+`benchkit`) | game layer / measured ledger | MOSTLY | kernel stdlib-only per contract; `players/neural` lazily binds `mlopt_core`; `benchkit` is torch+mlopt-core dependent (documented as torch-shaped by design). |
 | `discoverykit` | domain-free mining core | PASS | lazy `mlopt_discovery.*` seam preserved; no static import-linter contract but a dynamic poison-test (`tests/test_smoke.py`) — weaker enforcement, honestly documented. |
 | `kernel` | Term/Value/Language kernel | PASS | no attrs field yet (P0.5 pending — consistent). |
-| `engine`, `engine-exec-*`, `engine-typecheck-*`, `engine-transform*`, `engine-lex*`, `engine-parse*` | interpretations | PASS | tree-walk/bytecode/cranelift/NBE/rewrite — matches map. |
+| `engine`, `exec-*`, `tool-typecheck-*`, `tool-transform*`, `tool-lex*`, `tool-parse*` | interpretations | PASS | tree-walk/bytecode/cranelift/NBE/rewrite — matches map. |
 | `egraph` | (unlisted in ADR layer map) | DRIFT | Rust e-graph with its **own `Term` type** that already carries `attrs` — see below. |
 | `host`, `host-cli`, `host-lsp`, `host-tensor` | handl platform / tensor host | PASS | host-tensor exposes `tensor.*` as data (`index.hnl` + `OpRegistry`); `hnl-ext-mlopt` lives in mlopt repo and forwards to `python -m mlopt` — composition-root shape holds. |
 | `lib-kernel-ir` | native-path IR | PASS w/ note | torch-denoting by design; the "torch-free" non-goal is about *claims*, and none is made. |

@@ -15,7 +15,7 @@ use std::path::Path;
 
 use handl_language::{Ast, AstNode, AstRef};
 use handl_kit_prelude_lang::language_from_dir;
-use hnl_engine_transform_rewrite::RewriteEngine;
+use hnl_tool_transform_rewrite::RewriteEngine;
 
 /// Load `dir` as a handl language and return its transform ids.
 pub fn transform_ids(dir: &str) -> Result<Vec<String>, String> {

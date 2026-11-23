@@ -117,7 +117,7 @@ one peer client, one AST codec.  Measured output is unchanged:
 
 ### The peer build on this box
 
-`engine-transform` and `engine-transform-rewrite` were not checked
+`tool-transform` and `tool-transform-rewrite` were not checked
 out locally (phase 0's honest-skip cause).  Both were cloned into
 `/home/luis/GitHub/handl-lang/` and the crate built with maturin in
 a shadow tree (`/tmp/handl-peer-shadow`) — building in place is

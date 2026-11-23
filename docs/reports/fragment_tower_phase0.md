@@ -69,7 +69,7 @@ both engines: `load_vocab` rebuilds it into the Python law bank and
 pinned by `test_hand_added_law_visible_to_both_engines`.  The
 handl-side half is additionally pinned by the e2e
 `test_handl_peer_loads_the_vocab_dir`, which runs wherever the
-maturin extension is built (it skips here — `engine-transform-rewrite`
+maturin extension is built (it skips here — `tool-transform-rewrite`
 is not checked out locally, so the peer cannot build on this box).
 
 ## Verified

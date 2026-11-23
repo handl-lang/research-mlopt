@@ -14,7 +14,7 @@ pyo3 = { version = "0.26" }
 serde_json = "1"
 handl-language = { path = "../../../kernel/crates/handl-language" }
 handl-kit-prelude-lang = { path = "../../../host/crates/handl-kit-prelude-lang" }
-hnl-engine-transform-rewrite = { path = "../../../engine-transform-rewrite" }
+hnl-tool-transform-rewrite = { path = "../../../tool-transform-rewrite" }
 
 # ---------------------------------------------------------------------------
 # The path deps above cover only the direct edges. Everything those crates
@@ -32,11 +32,11 @@ hnl-engine-transform-rewrite = { path = "../../../engine-transform-rewrite" }
 handl-language = { path = "../../../kernel/crates/handl-language" }
 handl-value = { path = "../../../kernel/crates/handl-value" }
 
-[patch."https://github.com/handl-lang/engine-transform"]
-hnl-engine-transform = { path = "../../../engine-transform" }
+[patch."https://github.com/handl-lang/tool-transform"]
+hnl-tool-transform = { path = "../../../tool-transform" }
 
-[patch."https://github.com/handl-lang/engine-transform-rewrite"]
-hnl-engine-transform-rewrite = { path = "../../../engine-transform-rewrite" }
+[patch."https://github.com/handl-lang/tool-transform-rewrite"]
+hnl-tool-transform-rewrite = { path = "../../../tool-transform-rewrite" }
 
 [patch."https://github.com/handl-lang/host"]
 handl-kit-prelude-lang = { path = "../../../host/crates/handl-kit-prelude-lang" }
