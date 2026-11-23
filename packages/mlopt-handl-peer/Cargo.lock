@@ -3,35 +3,10 @@
 version = 4
 
 [[package]]
-name = "ar_archive_writer"
-version = "0.5.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "523e5e187fff36fcb8d1d19ccf0ca4ca43ec3d158316057f66dc6f72716bc5ec"
-dependencies = [
- "object",
-]
-
-[[package]]
 name = "autocfg"
 version = "1.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f2032f911046de80f0a198e0901378627c33f59ea0ac00e363d481118bd70a53"
-
-[[package]]
-name = "cc"
-version = "1.11.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "33ef9e3e8154a45c7a95cff4c1299702106ad94062d7bb85fdc5d3a5afd91d45"
-dependencies = [
- "find-msvc-tools",
- "shlex",
-]
-
-[[package]]
-name = "cfg-if"
-version = "1.0.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4e7648175b45a9a48536d676f68d918270699102aa8dab5496df06904c914600"
 
 [[package]]
 name = "equivalent"
@@ -40,10 +15,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "00d174d5400e5e8fd687ad1049e2f578285fa914201b1af7e8b112a4546bd826"
 
 [[package]]
-name = "find-msvc-tools"
-version = "0.1.15"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1c66915cc5391097de7a2b0b972e8505aa33c0df401fd3a6811dbdb32881ba48"
+name = "handl-calculus"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+]
 
 [[package]]
 name = "handl-kit-prelude-lang"
@@ -60,10 +37,19 @@ dependencies = [
 name = "handl-language"
 version = "0.1.0"
 dependencies = [
+ "handl-calculus",
  "handl-value",
- "hnl-engine",
  "rustc-hash",
  "serde",
+ "serde_json",
+ "thiserror",
+]
+
+[[package]]
+name = "handl-ops"
+version = "0.1.0"
+source = "git+https://github.com/handl-lang/kernel?branch=main#931485e97b4563aa9468077e738d15a46f0a5b5f"
+dependencies = [
  "serde_json",
  "thiserror",
 ]
@@ -72,6 +58,7 @@ dependencies = [
 name = "handl-platform"
 version = "0.1.0"
 dependencies = [
+ "handl-ops",
  "handl-value",
  "semver",
  "serde",
@@ -109,16 +96,6 @@ name = "heck"
 version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2304e00983f87ffb38b55b444b5e3b60a884b5d30c0fca7d82fe33449bbe55ea"
-
-[[package]]
-name = "hnl-engine"
-version = "0.1.0"
-dependencies = [
- "handl-value",
- "serde",
- "serde_json",
- "stacker",
-]
 
 [[package]]
 name = "hnl-engine-transform"
@@ -197,15 +174,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "object"
-version = "0.39.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2e5a6c098c7a3b6547378093f5cc30bc54fd361ce711e05293a5cc589562739b"
-dependencies = [
- "memchr",
-]
-
-[[package]]
 name = "once_cell"
 version = "1.21.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -224,16 +192,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "985e7ec9bb745e6ce6535b544d84d6cd6f7ad8bd711c398938ae983b91a766d9"
 dependencies = [
  "unicode-ident",
-]
-
-[[package]]
-name = "psm"
-version = "0.1.32"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4dcd034599e63b970727f70d79e02d62390a4a84f7c6b827c27c46d5ac3fa622"
-dependencies = [
- "ar_archive_writer",
- "cc",
 ]
 
 [[package]]
@@ -396,25 +354,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "shlex"
-version = "2.0.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f8fadd59c855ef2080decdef8ff161eb6661b86933c9d82e5ba29dc602a55aba"
-
-[[package]]
-name = "stacker"
-version = "0.1.25"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "707f49d46706bacf8a2b00d51dace3f9de527c13eec3778f570c411f89e69967"
-dependencies = [
- "cc",
- "cfg-if",
- "libc",
- "psm",
- "windows-sys",
-]
-
-[[package]]
 name = "syn"
 version = "2.0.119"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -522,21 +461,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "673aac59facbab8a9007c7f6108d11f63b603f7cabff99fabf650fea5c32b861"
 
 [[package]]
-name = "windows-link"
-version = "0.2.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f0805222e57f7521d6a62e36fa9163bc891acd422f971defe97d64e70d0a4fe5"
-
-[[package]]
-name = "windows-sys"
-version = "0.61.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ae137229bcbd6cdf0f7b80a31df61766145077ddf49416a728b02cb3921ff3fc"
-dependencies = [
- "windows-link",
-]
-
-[[package]]
 name = "winnow"
 version = "0.7.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -552,7 +476,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "29666d0abbfad1e3dc4dcf6144730dd3a3ab225bbbdac83319345b1b44ccfc1b"
 
 [[patch.unused]]
-name = "handl-plugin-lib-lang-run-compiled"
+name = "handl-plugin-sdkgen-backend-webidl"
+version = "0.1.0"
+
+[[patch.unused]]
+name = "handl-plugin-compile-sexp"
+version = "0.1.0"
+
+[[patch.unused]]
+name = "handl-plugin-compile-handl"
 version = "0.1.0"
 
 [[patch.unused]]
@@ -560,7 +492,19 @@ name = "handl-lib-transform"
 version = "0.1.0"
 
 [[patch.unused]]
+name = "compile-cuda"
+version = "0.0.1"
+
+[[patch.unused]]
+name = "compile-triton"
+version = "0.0.1"
+
+[[patch.unused]]
 name = "handl-plugin-lib-lang-parse"
+version = "0.1.0"
+
+[[patch.unused]]
+name = "handl-plugin-lib-lang-compile"
 version = "0.1.0"
 
 [[patch.unused]]
@@ -572,7 +516,19 @@ name = "handl-kit-lang"
 version = "0.1.0"
 
 [[patch.unused]]
+name = "handl-plugin-lib-lang-run-compiled"
+version = "0.1.0"
+
+[[patch.unused]]
 name = "handl-lib-obj"
+version = "0.1.0"
+
+[[patch.unused]]
+name = "handl-plugin-sdkgen-backend-c"
+version = "0.1.0"
+
+[[patch.unused]]
+name = "handl-plugin-sdkgen-emitter-file"
 version = "0.1.0"
 
 [[patch.unused]]
@@ -584,6 +540,10 @@ name = "hnl-engine-lint"
 version = "0.1.0"
 
 [[patch.unused]]
+name = "handl-kit-mlopt"
+version = "0.1.0"
+
+[[patch.unused]]
 name = "handl-kit-prelude"
 version = "0.1.0"
 
@@ -592,7 +552,7 @@ name = "handl-plugin-ffi"
 version = "0.1.0"
 
 [[patch.unused]]
-name = "handl-lib-combinators"
+name = "hnl-ext-mlopt"
 version = "0.1.0"
 
 [[patch.unused]]
@@ -601,6 +561,14 @@ version = "0.1.0"
 
 [[patch.unused]]
 name = "handl-lib-prim-handl"
+version = "0.1.0"
+
+[[patch.unused]]
+name = "handl-kit-test"
+version = "0.1.0"
+
+[[patch.unused]]
+name = "hnl-engine-test"
 version = "0.1.0"
 
 [[patch.unused]]
@@ -613,6 +581,10 @@ version = "0.1.0"
 
 [[patch.unused]]
 name = "handl-plugin-lib-lang-typecheck"
+version = "0.1.0"
+
+[[patch.unused]]
+name = "hnl-engine"
 version = "0.1.0"
 
 [[patch.unused]]
@@ -636,15 +608,11 @@ name = "handl-plugin-ffi"
 version = "0.1.0"
 
 [[patch.unused]]
-name = "handl-lib-ip"
+name = "handl-plugin-compile-js"
 version = "0.1.0"
 
 [[patch.unused]]
-name = "handl-lib-tag"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "handl-lib-desugar"
+name = "handl-plugin-sdkgen-cli"
 version = "0.1.0"
 
 [[patch.unused]]
@@ -660,15 +628,11 @@ name = "handl-plugin-lib-kv"
 version = "0.1.0"
 
 [[patch.unused]]
-name = "handl-lib-simplex"
-version = "0.1.0"
-
-[[patch.unused]]
 name = "handl-plugin-lib-serialize-toml-c"
 version = "0.1.0"
 
 [[patch.unused]]
-name = "handl-lib-str-handl"
+name = "handl-plugin-compile-dot"
 version = "0.1.0"
 
 [[patch.unused]]
@@ -680,27 +644,7 @@ name = "handl-lib-type"
 version = "0.1.0"
 
 [[patch.unused]]
-name = "handl-lib-bytes"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "handl-lib-cmp"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "handl-lib-combinators"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "handl-lib-error"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "handl-lib-mood"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "handl-lib-obj"
+name = "handl-ext"
 version = "0.1.0"
 
 [[patch.unused]]
@@ -716,23 +660,11 @@ name = "handl-lib-prim-handl"
 version = "0.1.0"
 
 [[patch.unused]]
-name = "handl-lib-type"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "handl-kit-test"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "handl-lib-test"
+name = "handl-plugin-compile-term"
 version = "0.1.0"
 
 [[patch.unused]]
 name = "hnl-engine-exec-bytecode"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "handl-lib-collections"
 version = "0.1.0"
 
 [[patch.unused]]
@@ -741,10 +673,6 @@ version = "0.1.0"
 
 [[patch.unused]]
 name = "hnl-engine-typecheck"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "handl-plugin-lib-crypto"
 version = "0.1.0"
 
 [[patch.unused]]
@@ -868,11 +796,23 @@ name = "hnl-engine-lex"
 version = "0.1.0"
 
 [[patch.unused]]
+name = "handl-plugin-compile-llvm"
+version = "0.1.0"
+
+[[patch.unused]]
+name = "handl-kit-pkg"
+version = "0.1.0"
+
+[[patch.unused]]
 name = "handl-lib-comb"
 version = "0.1.0"
 
 [[patch.unused]]
 name = "handl-plugin-lib-lang-lex"
+version = "0.1.0"
+
+[[patch.unused]]
+name = "handl-plugin-sdkgen-emitter-python"
 version = "0.1.0"
 
 [[patch.unused]]
@@ -884,15 +824,15 @@ name = "hnl-engine-exec-tree-walk"
 version = "0.1.0"
 
 [[patch.unused]]
+name = "handl-kit-eqsat"
+version = "0.1.0"
+
+[[patch.unused]]
 name = "handl-kit-stdlib"
 version = "0.1.0"
 
 [[patch.unused]]
-name = "handl-lib-loader"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "handl-lib-ffi"
+name = "hnl-engine-typecheck-nbe"
 version = "0.1.0"
 
 [[patch.unused]]
@@ -904,7 +844,7 @@ name = "handl-lib-bytes"
 version = "0.1.0"
 
 [[patch.unused]]
-name = "handl-lib-hello"
+name = "handl-plugin-lib-lang-eval"
 version = "0.1.0"
 
 [[patch.unused]]
@@ -912,19 +852,7 @@ name = "handl-lib-ops"
 version = "0.1.0"
 
 [[patch.unused]]
-name = "handl-lib-perlin"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "hnl-engine-typecheck-nbe"
-version = "0.1.0"
-
-[[patch.unused]]
 name = "hnl-engine-parse-pratt"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "handl-plugin-lib-lang-eval"
 version = "0.1.0"
 
 [[patch.unused]]
@@ -936,7 +864,7 @@ name = "handl-kit-data-prelude"
 version = "0.1.0"
 
 [[patch.unused]]
-name = "handl-plugin-lib-lang-compile"
+name = "handl-egraph"
 version = "0.1.0"
 
 [[patch.unused]]

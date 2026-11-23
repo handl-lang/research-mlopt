@@ -88,6 +88,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "handl-calculus"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "handl-discovery"
 version = "0.1.0"
 source = "git+https://github.com/handl-lang/discovery?branch=main#22d01f3d45b6dc678acb0f5b48279106feac211b"
@@ -102,7 +110,6 @@ dependencies = [
 [[package]]
 name = "handl-egraph"
 version = "0.1.0"
-source = "git+https://github.com/handl-lang/egraph?branch=main#7eebc5c1c29b98386339e105b00f3e344c5e97c5"
 dependencies = [
  "handl-language",
  "handl-value",
@@ -134,6 +141,7 @@ dependencies = [
 [[package]]
 name = "handl-kit-prelude-lang"
 version = "0.1.0"
+source = "git+https://github.com/handl-lang/host?branch=main#0bbfb726e6dd9232105b20b948e31f94ffc69b1a"
 dependencies = [
  "handl-language",
  "handl-plugin-ext-diag",
@@ -146,8 +154,8 @@ dependencies = [
 name = "handl-language"
 version = "0.1.0"
 dependencies = [
+ "handl-calculus",
  "handl-value",
- "hnl-engine",
  "rustc-hash",
  "serde",
  "serde_json",
@@ -155,24 +163,21 @@ dependencies = [
 ]
 
 [[package]]
-name = "handl-lib-desugar"
-version = "0.1.0"
-
-[[package]]
-name = "handl-lib-loader"
-version = "0.1.0"
-
-[[package]]
 name = "handl-lib-ops"
 version = "0.1.0"
 dependencies = [
- "handl-platform",
+ "handl-ops",
  "serde_json",
 ]
 
 [[package]]
-name = "handl-lib-str-handl"
+name = "handl-ops"
 version = "0.1.0"
+source = "git+https://github.com/handl-lang/kernel?branch=main#931485e97b4563aa9468077e738d15a46f0a5b5f"
+dependencies = [
+ "serde_json",
+ "thiserror",
+]
 
 [[package]]
 name = "handl-pkg-vendor"
@@ -185,6 +190,7 @@ dependencies = [
 name = "handl-platform"
 version = "0.1.0"
 dependencies = [
+ "handl-ops",
  "handl-value",
  "semver",
  "serde",
@@ -208,8 +214,8 @@ dependencies = [
 name = "handl-plugin-lib-char-native"
 version = "0.1.0"
 dependencies = [
+ "handl-ops",
  "handl-pkg-vendor",
- "handl-platform",
  "serde_json",
 ]
 
@@ -218,9 +224,8 @@ name = "handl-plugin-lib-handl"
 version = "0.1.0"
 dependencies = [
  "handl-language",
- "handl-lib-desugar",
- "handl-lib-loader",
- "handl-lib-str-handl",
+ "handl-ops",
+ "handl-pkg-vendor",
  "handl-platform",
  "handl-plugin-lib-char-native",
  "handl-plugin-module",
@@ -250,6 +255,7 @@ version = "0.1.0"
 dependencies = [
  "handl-kit-arrow-lower",
  "handl-language",
+ "handl-pkg-vendor",
  "handl-platform",
  "handl-value",
  "hnl-engine",
@@ -281,6 +287,7 @@ checksum = "ed5909b6e89a2db4456e54cd5f673791d7eca6732202bbf2a9cc504fe2f9b84a"
 name = "hnl-engine"
 version = "0.1.0"
 dependencies = [
+ "handl-calculus",
  "handl-value",
  "serde",
  "serde_json",
@@ -719,11 +726,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "29666d0abbfad1e3dc4dcf6144730dd3a3ab225bbbdac83319345b1b44ccfc1b"
 
 [[patch.unused]]
-name = "handl-kit-core"
+name = "handl-plugin-sdkgen-backend-webidl"
 version = "0.1.0"
 
 [[patch.unused]]
-name = "handl-plugin-lib-lang-run-compiled"
+name = "handl-plugin-compile-sexp"
+version = "0.1.0"
+
+[[patch.unused]]
+name = "handl-plugin-compile-handl"
 version = "0.1.0"
 
 [[patch.unused]]
@@ -731,7 +742,19 @@ name = "handl-lib-transform"
 version = "0.1.0"
 
 [[patch.unused]]
+name = "compile-cuda"
+version = "0.0.1"
+
+[[patch.unused]]
+name = "compile-triton"
+version = "0.0.1"
+
+[[patch.unused]]
 name = "handl-plugin-lib-lang-parse"
+version = "0.1.0"
+
+[[patch.unused]]
+name = "handl-plugin-lib-lang-compile"
 version = "0.1.0"
 
 [[patch.unused]]
@@ -739,7 +762,19 @@ name = "handl-kit-lang"
 version = "0.1.0"
 
 [[patch.unused]]
+name = "handl-plugin-lib-lang-run-compiled"
+version = "0.1.0"
+
+[[patch.unused]]
 name = "handl-lib-obj"
+version = "0.1.0"
+
+[[patch.unused]]
+name = "handl-plugin-sdkgen-backend-c"
+version = "0.1.0"
+
+[[patch.unused]]
+name = "handl-plugin-sdkgen-emitter-file"
 version = "0.1.0"
 
 [[patch.unused]]
@@ -763,7 +798,7 @@ name = "handl-plugin-ffi"
 version = "0.1.0"
 
 [[patch.unused]]
-name = "handl-lib-combinators"
+name = "hnl-ext-mlopt"
 version = "0.1.0"
 
 [[patch.unused]]
@@ -772,6 +807,14 @@ version = "0.1.0"
 
 [[patch.unused]]
 name = "handl-lib-prim-handl"
+version = "0.1.0"
+
+[[patch.unused]]
+name = "handl-kit-test"
+version = "0.1.0"
+
+[[patch.unused]]
+name = "hnl-engine-test"
 version = "0.1.0"
 
 [[patch.unused]]
@@ -807,11 +850,11 @@ name = "handl-plugin-ffi"
 version = "0.1.0"
 
 [[patch.unused]]
-name = "handl-lib-ip"
+name = "handl-plugin-compile-js"
 version = "0.1.0"
 
 [[patch.unused]]
-name = "handl-lib-tag"
+name = "handl-plugin-sdkgen-cli"
 version = "0.1.0"
 
 [[patch.unused]]
@@ -827,7 +870,7 @@ name = "handl-plugin-lib-serialize-toml-c"
 version = "0.1.0"
 
 [[patch.unused]]
-name = "handl-lib-simplex"
+name = "handl-plugin-compile-dot"
 version = "0.1.0"
 
 [[patch.unused]]
@@ -835,27 +878,7 @@ name = "handl-lib-type"
 version = "0.1.0"
 
 [[patch.unused]]
-name = "handl-lib-bytes"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "handl-lib-cmp"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "handl-lib-combinators"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "handl-lib-error"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "handl-lib-mood"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "handl-lib-obj"
+name = "handl-ext"
 version = "0.1.0"
 
 [[patch.unused]]
@@ -867,23 +890,7 @@ name = "handl-lib-prim-handl"
 version = "0.1.0"
 
 [[patch.unused]]
-name = "handl-lib-type"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "handl-kit-test"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "handl-lib-test"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "handl-lib-collections"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "handl-plugin-lib-crypto"
+name = "handl-plugin-compile-term"
 version = "0.1.0"
 
 [[patch.unused]]
@@ -987,6 +994,14 @@ name = "handl-kit-server"
 version = "0.1.0"
 
 [[patch.unused]]
+name = "handl-plugin-compile-llvm"
+version = "0.1.0"
+
+[[patch.unused]]
+name = "handl-kit-pkg"
+version = "0.1.0"
+
+[[patch.unused]]
 name = "handl-lib-comb"
 version = "0.1.0"
 
@@ -995,11 +1010,23 @@ name = "handl-plugin-lib-lang-lex"
 version = "0.1.0"
 
 [[patch.unused]]
+name = "handl-plugin-sdkgen-emitter-python"
+version = "0.1.0"
+
+[[patch.unused]]
 name = "handl-plugin-lib-otlp-c"
 version = "0.1.0"
 
 [[patch.unused]]
+name = "handl-kit-eqsat"
+version = "0.1.0"
+
+[[patch.unused]]
 name = "handl-kit-stdlib"
+version = "0.1.0"
+
+[[patch.unused]]
+name = "handl-kit-prelude-lang"
 version = "0.1.0"
 
 [[patch.unused]]
@@ -1015,18 +1042,6 @@ name = "handl-lib-bytes"
 version = "0.1.0"
 
 [[patch.unused]]
-name = "handl-lib-ffi"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "handl-lib-perlin"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "handl-lib-hello"
-version = "0.1.0"
-
-[[patch.unused]]
 name = "handl-plugin-lib-lang-eval"
 version = "0.1.0"
 
@@ -1039,5 +1054,5 @@ name = "handl-kit-data-prelude"
 version = "0.1.0"
 
 [[patch.unused]]
-name = "handl-plugin-lib-lang-compile"
+name = "handl-kit-core"
 version = "0.1.0"
