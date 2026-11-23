@@ -14,7 +14,7 @@ forks, no vendoring.
 | language | `handl-kit-prelude-lang` | `language_from_yaml()` — the canonical eval-path `Language` as data |
 | value | `handl-value` | `TaggedValue` incl. `Tensor` (the real tensor variant) |
 | runtime | `handl-runtime` | `Runtime` + `EngineRegistry` + `RuntimeConfig` + `ModuleLoader` |
-| engines | `hnl-engine-{lex-pattern,parse-pratt,exec-tree-walk}` (+`hnl-exec`) | `"data"`/`"pratt"`/`"tree-walk"` — the smallest honest set (no sdkgen/compile/lint/lsp); one crate per `engine-*` repo post-ADR-0128 |
+| engines | `hnl-tool-{lex-pattern,parse-pratt}` + `hnl-exec-tree-walk` (+`hnl-exec`) | `"data"`/`"pratt"`/`"tree-walk"` — the smallest honest set (no codegen/compile/lint/lsp); one crate per `tool-*`/`exec-*` repo post-ADR-0128 |
 | module bridge | `plugin-lib-handl` + `plugin-module` | `HandlModule` + `OpRegistry` + `ModuleRegistry` |
 | tensor ops | `handl-host-tensor` | `tensor_op_registry()` — the 18 `tensor.*` ops |
 | mlopt program | `hnl/conv_bn.hnl` → `CONV_BN_HNL` | the conv→batch_norm composite + its folded form, `.hnl` over the dep surface; exported over the crate API (`mlopt_kit::CONV_BN_HNL`, `hnl_module("conv_bn")`) |

@@ -4,7 +4,7 @@
 experiment the paper cites. The handl stack is composed directly from
 declared git deps (`src/lib.rs` assembles the kit — the same component
 set mlopt-kit composes; the direct `mlopt-kit` cargo dep is unblocked
-now that its deps float on the post-ADR-0128 `hnl-engine-*` crates at
+now that its deps float on the post-ADR-0128 `hnl-tool-*`/`hnl-exec-*` crates at
 current main — this crate keeps the composed form anyway, as evidence
 that the stack assembles from declared components alone).
 The `.hnl` artifact under measurement resolves in-tree — mlopt-kit is

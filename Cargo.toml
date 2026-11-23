@@ -3,7 +3,7 @@
 # workspace; the pre-existing Rust crates — and `packages/mlopt-experiments/`
 # (`mlopt-experiments`, the paper's evidence crate — see
 # `manifest/kit.toml`), which deliberately stays a standalone
-# composition of the same `hnl-engine-*` dep edges mlopt-kit declares —
+# composition of the same `hnl-tool-*`/`hnl-exec-*` dep edges mlopt-kit declares —
 # keep their own manifests and lockfiles and are listed in `exclude` so
 # `cargo` inside them still resolves them standalone.
 
@@ -53,7 +53,7 @@ exclude = [
 # handl-plugin-module = { path = "/path/to/platform/crates/plugin-module" }
 # handl-plugin-lib-handl = { path = "/path/to/platform/crates/plugin-lib-handl" }
 #
-# # The engines live one crate per repo post-ADR-0128 (the `hnl-engine-*`
+# # The engines live one crate per repo post-ADR-0128 (the `hnl-tool-*`/`hnl-exec-*`
 # # crates, single-crate-at-root layout like the `lib-*` ports):
 # [patch."https://github.com/handl-lang/exec"]
 # hnl-exec = { path = "/path/to/exec" }

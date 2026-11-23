@@ -30,7 +30,7 @@ handl-plugin-module = { git = "https://github.com/handl-lang/host", branch = "ma
 handl-plugin-lib-handl = { git = "https://github.com/handl-lang/host", branch = "main" }
 
 # engines — the smallest honest set: data lexer, Pratt parser, tree-walk
-# eval (the `hnl-engine-*` crates in their own repos, post-ADR-0128 —
+# eval (the `hnl-tool-*`/`hnl-exec-*` crates in their own repos, post-ADR-0128 —
 # renamed from `handl-plugin-engine-*` and split out of platform at
 # platform 0ce78121)
 hnl-exec = { git = "https://github.com/handl-lang/exec", branch = "main" }

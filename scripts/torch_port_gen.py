@@ -10,7 +10,7 @@ and drifted from ATen reality — the audit
 (``docs/reports/arch_audit_graphopt_packages.md``) found argpos/kwarg
 bugs *because* of them.
 
-This is the sdkgen answer, mirroring host-tensor's
+This is the codegen answer, mirroring host-tensor's
 ``tools/aten_port_gen.rs`` + ``tools/aten_schemas.json`` +
 ``tools/aten_port_list.txt`` pipeline: the SAME schema dump host-tensor
 consumes drives the mlopt-side classification, so schema drift becomes

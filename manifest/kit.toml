@@ -64,7 +64,7 @@ crates = [
     "hnl-tool-parse-pratt",
     "hnl-exec-tree-walk",
 ]
-role = "the smallest honest engine set — data lex / pratt parse / tree-walk eval (post-ADR-0128 these live one crate per repo as `hnl-engine-*`, renamed from `handl-plugin-engine-*`)."
+role = "the smallest honest engine set — data lex / pratt parse / tree-walk eval (post-ADR-0128 these live one crate per repo as `hnl-tool-*`/`hnl-exec-*`, renamed from `handl-plugin-engine-*`)."
 
 [[component]]
 name = "host-tensor"
@@ -97,7 +97,7 @@ path = "packages/mlopt-kit"
 float = "main"
 kind = "cargo-git"
 crates = ["mlopt-kit"]
-role = "mlopt's composition seam — the intended direct dep (it assembles this same stack), an in-tree workspace member (packages/mlopt-kit). Its deps float on the post-ADR-0128 `hnl-engine-*` crates at current main (the rename that briefly blocked it as a *git* dep is repointed). The artifact under measurement (hnl/conv_bn.hnl — the minted fold, evaluated) resolves in-tree at packages/mlopt-kit/hnl/conv_bn.hnl and is exported over the crate API as `CONV_BN_HNL` / `hnl_module(\"conv_bn\")` (include_str! — part of the crate artifact)."
+role = "mlopt's composition seam — the intended direct dep (it assembles this same stack), an in-tree workspace member (packages/mlopt-kit). Its deps float on the post-ADR-0128 `hnl-tool-*`/`hnl-exec-*` crates at current main (the rename that briefly blocked it as a *git* dep is repointed). The artifact under measurement (hnl/conv_bn.hnl — the minted fold, evaluated) resolves in-tree at packages/mlopt-kit/hnl/conv_bn.hnl and is exported over the crate API as `CONV_BN_HNL` / `hnl_module(\"conv_bn\")` (include_str! — part of the crate artifact)."
 
 # ---------------------------------------------------------------------------
 # Components — the Python arm (the discovery engine; env-level composition)

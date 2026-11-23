@@ -11,7 +11,7 @@
 //!    bridge runtimes bind (ADR-0128 §"the 0.8 seam").
 //! 3. **Engines** — the smallest set mlopt needs: the data lexer
 //!    (`"data"`), the Pratt parser (`"pratt"`), and the tree-walk
-//!    evaluator (`"tree-walk"`). No sdkgen/compile/lint/lsp — the
+//!    evaluator (`"tree-walk"`). No codegen/compile/lint/lsp — the
 //!    [`EngineRegistry`] selects engines by name, so a later consumer
 //!    can register more without touching this crate.
 //! 4. **Modules** — `host-tensor`'s `tensor.*` op surface (18 ops)

@@ -14,7 +14,7 @@ description = "graphopt evidence generation — the paper's experiments, compose
 # The kit the experiments run on is `mlopt-kit`'s `CatoptKit`, consumed
 # as a declared git dep floating on `main` — the intended arm
 # manifest/kit.toml documents (`kind = "cargo-git"`), unblocked now that
-# mlopt-kit's deps float on the post-ADR-0128 `hnl-engine-*` crates at
+# mlopt-kit's deps float on the post-ADR-0128 `hnl-tool-*`/`hnl-exec-*` crates at
 # current main. The component edges below mirror what mlopt-kit
 # declares: the dep graph is the evidence that the stack assembles from
 # declared components alone — no builder is re-spelled in this crate
@@ -42,7 +42,7 @@ handl-plugin-module = { git = "https://github.com/handl-lang/host", branch = "ma
 handl-plugin-lib-handl = { git = "https://github.com/handl-lang/host", branch = "main" }
 
 # engines — the smallest honest set: data lexer, Pratt parser, tree-walk
-# eval (the `hnl-engine-*` crates in their own repos, post-ADR-0128)
+# eval (the `hnl-tool-*`/`hnl-exec-*` crates in their own repos, post-ADR-0128)
 hnl-exec = { git = "https://github.com/handl-lang/exec", branch = "main" }
 hnl-tool-lex-pattern = { git = "https://github.com/handl-lang/tool-lex-pattern", branch = "main" }
 hnl-tool-parse-pratt = { git = "https://github.com/handl-lang/tool-parse-pratt", branch = "main" }

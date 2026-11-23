@@ -63,7 +63,7 @@ The scaffold's independent run (`handl-lang/research-mlopt`
 `packages/mlopt-experiments/`, `conv-bn-fold --repeat 100`, in-process kit, its own
 6×4×3×3-on-8×8 dyadic fixture) lands the same two regimes and confirms
 `hnl-run` exercises the identical path — the scaffold composes the
-renamed `hnl-engine-*` crates directly (the same engine component set
+renamed `hnl-tool-*`/`hnl-exec-*` crates directly (the same engine component set
 `CatoptKit` assembles; `manifest/kit.toml`'s gap row), just kept
 in-process instead of behind the subprocess door:
 
