@@ -1,0 +1,206 @@
+# workflows/gate.yaml — bespoke per-push gate for research-mlopt.
+#
+# Replaces ci.sh as the bupha/peregrin gate (ci.sh stays in the tree
+# for reference until the runner flips). Invoke:
+#
+#   GATE_REPO="$PWD" GATE_RESULTS="$PWD/.gate-results.jsonl" \
+#     peregrin campaign run workflows/gate.yaml --result .ci-result.json
+#
+# Pipeline: gate.init → gate.ensure → two parallel legs → gate.join →
+# gate.report. The legs port ci.sh's two halves:
+#
+#   gate.python — `uv sync --frozen` + `MLOPT_GATES_LANE=static
+#     bash scripts/gates.sh`: the static gates only (ruff check /
+#     ruff format --check over packages+scripts+examples, ty, vulture,
+#     import-linter, bandit, semgrep, radon ratchet). The Python
+#     *suite* lanes (dev/full) are mlopt-nightly's job — they do not
+#     belong on the push path. gates.sh is invoked rather than
+#     re-inlined so the stage list cannot drift from the script the
+#     nightly campaign already runs.
+#   gate.rust   — ci.sh's cargo half verbatim: `cargo test
+#     --manifest-path packages/mlopt-experiments/Cargo.toml` +
+#     `cargo run --release --bin conv-bn-fold -- --repeat 0`
+#     (the certification leg, no timing), under ci.sh's env exports
+#     (CARGO_INCREMENTAL=0, debug-info off, CARGO_NET_GIT_FETCH_WITH_CLI,
+#     shared CARGO_TARGET_DIR via the ensure-siblings env file) and
+#     the ~/.cache/devin/handl_deps.env insteadOf rewrite for the
+#     cross-repo git deps.
+#
+# ensure-siblings (bundle fragment) recreates the ../<repo> sibling
+# layout + shared CARGO_TARGET_DIR env file for detached worktrees —
+# the port of ci.sh's ensure_siblings(). ci.sh's defensive
+# `sed -i s|../research-mlopt|$PWD|` self-patch rewrite is not ported:
+# no manifest in this repo spells `path = "../research-mlopt"`, so
+# the second-spelling hazard cannot arise (same call as
+# exec-tensor/workflows/gate.yaml).
+#
+# Verdict: .ci-result.json `.conclusion` == "success" — gate.report
+# requires one record per family (python + rust) and zero rc != 0.
+name: gate-research-mlopt
+
+result:
+  - event: gate.pass
+    conclusion: success
+  - event: gate.fail
+    conclusion: failure
+  - event: gate.failed
+    conclusion: failure
+  - event: gate.init.failed
+    conclusion: failure
+  - event: ensure.failed
+    conclusion: failure
+
+capabilities:
+  env:
+    - GATE_REPO
+    - GATE_RESULTS
+    - GATE_TARGET_DIR
+    - GATE_ENV_FILE
+    - CI_JOBS
+    - CI_BUILD_JOBS
+    - CARGO_NET_GIT_FETCH_WITH_CLI
+
+nodes:
+  # --- init: validate inputs, fresh results file --------------------
+  - id: gate.init
+    driver: shell
+    on: [start]
+    emits: [gate.due, gate.init.failed]
+    params:
+      cmd: >-
+        set -u;
+        REPO="${config.gate.repo:-${env("GATE_REPO","")}}";
+        [ -n "$REPO" ] || { echo "gate.repo is required — set GATE_REPO or config.gate.repo to an absolute checkout path"; exit 1; };
+        [ -d "$REPO" ] || { echo "no such directory: $REPO"; exit 1; };
+        RES="${config.gate.results:-${env("GATE_RESULTS","$HOME/.local/share/handl-gates/research-mlopt.results.jsonl")}}";
+        mkdir -p "$(dirname "$RES")";
+        : > "$RES";
+        echo "gate-research-mlopt: repo=$REPO results=$RES"
+      timeout: 60
+      emit:
+        "0": gate.due
+        default: gate.init.failed
+
+  # --- ensure: worktree sibling layout + shared cargo target env ----
+  - include: tamias:handl-gates@0.3.3//lib/ensure-siblings.node.yml
+    id: gate.ensure
+    on: [gate.due]
+    emits: [ensure.done, ensure.failed]
+    params:
+      repo: '${config.gate.repo:-${env("GATE_REPO","")}}'
+      target_dir: '${config.gate.target_dir:-${env("GATE_TARGET_DIR","auto")}}'
+      env_file: '${config.gate.env_file:-${env("GATE_ENV_FILE","auto")}}'
+      emit:
+        "0": ensure.done
+        default: ensure.failed
+
+  # --- leg 1: Python static gates (gates.sh `static` lane) ---------
+  - id: gate.python
+    driver: shell
+    on: [ensure.done]
+    emits: [gate.leg.end]
+    params:
+      repo: '${config.gate.repo:-${env("GATE_REPO","")}}'
+      results: '${config.gate.results:-${env("GATE_RESULTS","$HOME/.local/share/handl-gates/research-mlopt.results.jsonl")}}'
+      timeout: 1800
+      cmd: |-
+        set -uo pipefail
+        REPO="${params.repo}"
+        RESULTS="${params.results}"
+        START=$(date +%s)
+        cd "$REPO" && REPO="$(pwd)" || { echo "no such directory: ${params.repo}"; exit 1; }
+        export PATH="$HOME/.local/bin:$PATH"
+        ( set -euo pipefail;
+          # ci.sh's sync: --frozen, default groups (dev included).
+          # Repeat syncs are cheap via the uv cache; unconditional
+          # keeps the leg honest about the lockfile.
+          uv sync --frozen
+          MLOPT_GATES_LANE=static bash scripts/gates.sh )
+        rc=$?
+        if [ -n "$RESULTS" ]; then
+          esc=$(printf '%s' "$REPO" | sed 's/\\/\\\\/g; s/"/\\"/g')
+          printf '{"family":"python","repo":"%s","rc":%s,"secs":%s}\n' "$esc" "$rc" "$(( $(date +%s) - START ))" >> "$RESULTS" 2>/dev/null || true
+        fi
+        exit $rc
+      emit:
+        "0": gate.leg.end
+        default: gate.leg.end
+
+  # --- leg 2: ci.sh's cargo half — experiments test + cert run ----
+  - id: gate.rust
+    driver: shell
+    on: [ensure.done]
+    emits: [gate.leg.end]
+    params:
+      repo: '${config.gate.repo:-${env("GATE_REPO","")}}'
+      results: '${config.gate.results:-${env("GATE_RESULTS","$HOME/.local/share/handl-gates/research-mlopt.results.jsonl")}}'
+      env_file: '${config.gate.env_file:-${env("GATE_ENV_FILE","auto")}}'
+      # Release-builds the handl dep stack for conv-bn-fold on a cold
+      # target; the shared .ci-target dir keeps steady-state runs warm.
+      # Kept under the fleet runner's ~6380s external TERM.
+      timeout: 5400
+      cmd: |-
+        set -uo pipefail
+        REPO="${params.repo}"
+        RESULTS="${params.results}"
+        START=$(date +%s)
+        cd "$REPO" && REPO="$(pwd)" || { echo "no such directory: ${params.repo}"; exit 1; }
+        EF="${params.env_file}"
+        [ "$EF" = "auto" ] && EF="$(dirname "$REPO")/.gate-env/$(basename "$REPO").env"
+        [ -z "$EF" ] || [ ! -f "$EF" ] || . "$EF"
+        export PATH="$HOME/.cargo/bin:$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin"
+        export CARGO_INCREMENTAL=0 CARGO_PROFILE_DEV_DEBUG=0 CARGO_PROFILE_TEST_DEBUG=0
+        export CARGO_BUILD_JOBS="${CI_BUILD_JOBS:-2}" RUST_TEST_THREADS="${CI_JOBS:-2}"
+        # Cross-repo git deps resolve over ssh/cli locally — same
+        # insteadOf env ci.sh installs.
+        export CARGO_NET_GIT_FETCH_WITH_CLI="${CARGO_NET_GIT_FETCH_WITH_CLI:-true}"
+        if [ -z "${GIT_CONFIG_COUNT:-}" ] && [ -f "$HOME/.cache/devin/handl_deps.env" ]; then
+          # shellcheck disable=SC1091
+          . "$HOME/.cache/devin/handl_deps.env"
+        fi
+        ( set -euo pipefail;
+          # mlopt-experiments is excluded from the root workspace (own
+          # lockfile — see the `exclude` row in Cargo.toml).
+          cargo test --manifest-path packages/mlopt-experiments/Cargo.toml;
+          # The certification leg — value-equality through the real
+          # runtime, no timing.
+          cargo run --release --manifest-path packages/mlopt-experiments/Cargo.toml --bin conv-bn-fold -- --repeat 0 )
+        rc=$?
+        if [ -n "$RESULTS" ]; then
+          esc=$(printf '%s' "$REPO" | sed 's/\\/\\\\/g; s/"/\\"/g')
+          printf '{"family":"rust","repo":"%s","rc":%s,"secs":%s}\n' "$esc" "$rc" "$(( $(date +%s) - START ))" >> "$RESULTS" 2>/dev/null || true
+        fi
+        exit $rc
+      emit:
+        "0": gate.leg.end
+        default: gate.leg.end
+
+  # --- join: both legs emit gate.leg.end exactly once ---------------
+  - id: gate.join
+    driver: noop
+    on: [gate.leg.end]
+    fan_in:
+      count: 2
+      emit: gate.mapped
+    emits: [gate.mapped]
+
+  # --- report: verdict from results.jsonl — any rc != 0 fails ------
+  - id: gate.report
+    driver: shell
+    on: [gate.mapped]
+    emits: [gate.pass, gate.fail]
+    params:
+      cmd: |-
+        set -u
+        F="${config.gate.results:-${env("GATE_RESULTS","$HOME/.local/share/handl-gates/research-mlopt.results.jsonl")}}"
+        [ -s "$F" ] || { echo "no results record — gate produced nothing"; exit 1; }
+        total=$(wc -l < "$F" | tr -d ' ')
+        fails=$(awk -F'"rc":' '{split($2,a,","); if (a[1]+0 != 0) c++} END{print c+0}' "$F")
+        # One record per leg family (python + rust).
+        [ "$total" -ge 2 ] || { echo "expected >= 2 lane record(s), got $total"; cat "$F"; exit 1; }
+        { echo "gate-research-mlopt: $total lane record(s), $fails failed"; cat "$F"; } || true
+        [ "$fails" -eq 0 ]
+      timeout: 60
+      emit:
+        "0": gate.pass
+        default: gate.fail
