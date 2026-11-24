@@ -10,7 +10,9 @@ optimization machinery lives here; it lives in the sibling repos:
   from this repo's `packages/mlopt-torch` in P3 Step D-1e; a git dep,
   NOT a workspace member)
 - `handl-lang/kit-host-tensor` — the host-tensor backend
-  (`mlopt_host_tensor`/`kit_host_tensor`)
+  (`kit_host_tensor`; bridge-only since the P-010 dissolution — the
+  `tensor.*` surface artifact is vendored at
+  `src/mlopt/host_surface.json`, see `tensor_surface.py`)
 - this repo also ships the domain packages as workspace members
   (`packages/mlopt-torch` et al.) — the historical graphopt splits
   below remain accurate provenance:

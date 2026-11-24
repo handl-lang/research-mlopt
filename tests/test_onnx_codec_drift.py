@@ -45,7 +45,7 @@ from __future__ import annotations
 from typing import Any
 
 import pytest
-from kit_host_tensor.surface import host_ops
+from mlopt.tensor_surface import host_ops
 from mlopt_core.ir import IR, Const, Op, TensorType, Var
 from onnx import defs
 
@@ -72,9 +72,9 @@ def _ir_op_oracle() -> frozenset[str]:
     are the IR vocabulary an ONNX map may legitimately name.
     """
     from kit_host_tensor.bindings import HOST_BINDINGS
-    from mlopt_core.opmeta import REGISTRY
     from kit_torch.aten_classify import ATEN_TO_IR
     from kit_torch.torch_bindings import _IR_TO_TORCH
+    from mlopt_core.opmeta import REGISTRY
 
     return (
         frozenset(REGISTRY)

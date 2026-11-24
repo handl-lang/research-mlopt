@@ -159,8 +159,9 @@ kit-carriers = { git = "https://github.com/handl-lang/mlopt-carriers.git", tag =
 kit-cuda = { git = "https://github.com/handl-lang/kit-cuda.git", tag = "v0.1.9" }
 kit-discovery = { git = "https://github.com/handl-lang/mlopt-discovery.git", tag = "v0.1.11" }
 kit-onnx = { git = "https://github.com/handl-lang/kit-onnx.git", tag = "v0.1.6" }
-# kit-host-tensor (P3 Step D-1f): the host-tensor backend, split to
-# handl-lang/kit-host-tensor — pinned git dep at the v0.1.4 tag.
+# kit-host-tensor (P3 Step D-1f, bridge-only since the P-010
+# dissolution): the PyO3 tensor.* bridge + HOST_BINDINGS op-set
+# oracle the cross-stack drift tests import — pinned git dep.
 kit-host-tensor = { git = "https://github.com/handl-lang/kit-host-tensor.git", tag = "v0.1.6" }
 mlopt-dtypes = { git = "https://github.com/handl-lang/eqsat.git", subdirectory = "packages/mlopt-dtypes", tag = "v0.1.14" }
 # packages/mlopt (P3 Step D-2): the product member — workspace dep so

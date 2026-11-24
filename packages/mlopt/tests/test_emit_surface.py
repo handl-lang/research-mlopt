@@ -4,7 +4,9 @@ Closes the codec-fragmentation debt flagged by
 ``graphopt:docs/reports/arch_review_0174.md`` §4 (ADR-0174 invariant
 4): the ~203-entry hand-written IR-op → ``tensor.*`` builder table had
 no guard against the canonical generated surface
-(``kit_host_tensor.host_surface.json``, 239 ops).  These tests pin:
+(the vendored ``mlopt/tensor_surface.py`` ``host_surface.json``,
+239 ops — a pinned copy of ``handl-lang/exec-tensor``'s artifact).
+These tests pin:
 
 * **forward** — every ``_OPS`` builder, executed on a canonical probe
   term, emits a primary ``tensor.<name>(…)`` call that exists in the
@@ -31,11 +33,11 @@ import re
 from typing import Any
 
 import pytest
-from kit_host_tensor.surface import host_ops
 from mlopt_core.ir import Const, Op, TensorType, Var
 from mlopt_core.opmeta import REGISTRY
 
 from mlopt.emit import _MECH_SPECS, _MECH_TAGS, _OPS, UnsupportedOpError, _tensor_slots, emit
+from mlopt.tensor_surface import host_ops
 
 _T = TensorType((2, 3))
 

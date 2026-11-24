@@ -38,7 +38,8 @@ from __future__ import annotations
 import re
 from typing import Any
 
-from kit_host_tensor.surface import host_ops
+import pytest
+from mlopt.tensor_surface import host_ops
 from mlopt_core.ir import Op, TensorType, Var
 
 _T = TensorType((2, 3))
@@ -420,3 +421,30 @@ class TestTorchBindingsSurface:
             "HOST_BINDINGS lowers ops torch cannot bind: "
             f"{sorted(unexpected)}"
         )
+
+
+class TestHostBindingsSurface:
+    """``HOST_BINDINGS`` keys must be real ``tensor.*`` ops.
+
+    Ported from kit-host-tensor's ``test_host_surface.py`` when the
+    surface artifact moved to exec-tensor + the mlopt package's
+    vendored copy (P-010 dissolution) — the check needs both tables,
+    and this file already imports both.
+    """
+
+    def test_every_binding_key_is_a_host_op(self) -> None:
+        pytest.importorskip("kit_host_tensor")
+        from kit_host_tensor.bindings import HOST_BINDINGS
+
+        surface = host_ops()
+        missing = {f"tensor.{k}" for k in HOST_BINDINGS} - set(surface)
+        assert not missing, (
+            f"HOST_BINDINGS names ops the host surface lacks: "
+            f"{sorted(missing)}"
+        )
+
+    def test_binding_count_stable(self) -> None:
+        pytest.importorskip("kit_host_tensor")
+        from kit_host_tensor.bindings import HOST_BINDINGS
+
+        assert len(HOST_BINDINGS) == 138
