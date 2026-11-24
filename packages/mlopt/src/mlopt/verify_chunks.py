@@ -202,7 +202,7 @@ def _entry_numel(f: Any) -> int | None:
         try:
             return int(numel())
         except Exception:  # noqa: BLE001 — exotic tensor-like
-            pass
+            pass  # nosec B110 — exotic tensor-like numel() may raise anything; fall through to .size/.shape probes
     size = getattr(f, "size", None)  # numpy.ndarray
     if isinstance(size, int):
         return size

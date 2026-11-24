@@ -298,7 +298,7 @@ def _import_torch() -> Any:
 
 def _import_huggingface_hub() -> Any:
     try:
-        import huggingface_hub
+        import huggingface_hub  # ty: ignore[import-not-found]
     except ImportError as e:
         raise RuntimeError(
             "mlopt kokoro adapter requires `huggingface_hub` — install the "

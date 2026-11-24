@@ -194,7 +194,7 @@ def main() -> int:
     ap.add_argument("--attn", default="sdpa", help="attn_implementation (sdpa|eager)")
     args = ap.parse_args()
 
-    import transformers
+    import transformers  # ty: ignore[import-not-found]
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     dtype = torch.bfloat16 if device.type == "cuda" else torch.float32

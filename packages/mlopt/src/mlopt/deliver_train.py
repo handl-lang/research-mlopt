@@ -460,11 +460,11 @@ def aggregate_rewards(
     }
     out: dict[str, float] = {}
     for name, per_case in meds.items():
-        ratios = [
-            per_case[k] / best_by_case[k]
-            for k in per_case
-            if best_by_case.get(k) is not None and best_by_case[k] > 0
-        ]
+        ratios = []
+        for k in per_case:
+            best = best_by_case.get(k)
+            if best is not None and best > 0:
+                ratios.append(per_case[k] / best)
         out[name] = round(sum(ratios) / len(ratios), 4) if ratios else float("nan")
     return out
 

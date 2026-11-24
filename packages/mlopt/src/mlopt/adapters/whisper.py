@@ -234,7 +234,7 @@ def _classes() -> dict[str, type]:
     if _CLASSES is not None:
         return _CLASSES
     import torch.nn as nn
-    from transformers.cache_utils import (
+    from transformers.cache_utils import (  # ty: ignore[import-not-found]
         CacheLayerMixin,
         DynamicCache,
         EncoderDecoderCache,
@@ -432,7 +432,7 @@ def _import_torch() -> Any:
 
 def _import_transformers() -> Any:
     try:
-        import transformers
+        import transformers  # ty: ignore[import-not-found]
     except ImportError as e:
         raise RuntimeError(
             "mlopt whisper adapter requires `transformers` — install it "

@@ -36,7 +36,7 @@ def main() -> int:
     ap.add_argument("--attn", default="sdpa")
     args = ap.parse_args()
 
-    import transformers
+    import transformers  # ty: ignore[import-not-found]
 
     device = torch.device("cuda")
     dtype = torch.bfloat16
