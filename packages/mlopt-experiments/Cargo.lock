@@ -122,7 +122,7 @@ dependencies = [
 [[package]]
 name = "handl-host-tensor"
 version = "0.1.0"
-source = "git+https://github.com/handl-lang/host-tensor?branch=main#446ec70cd47a48cff4714fab93187e10879c9240"
+source = "git+https://github.com/handl-lang/exec-tensor?branch=main#446ec70cd47a48cff4714fab93187e10879c9240"
 dependencies = [
  "handl-lib-ops",
  "handl-platform",

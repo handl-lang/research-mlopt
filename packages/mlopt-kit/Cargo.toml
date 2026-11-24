@@ -40,7 +40,7 @@ hnl-exec-tree-walk = { git = "https://github.com/handl-lang/exec-tree-walk", bra
 
 # host-tensor — the `tensor.*` host-function surface (18 ops: dense n-d
 # f64 tensors over the `{"__tensor__": …}` wire form → `TaggedValue::Tensor`)
-handl-host-tensor = { git = "https://github.com/handl-lang/host-tensor", branch = "main" }
+handl-host-tensor = { git = "https://github.com/handl-lang/exec-tensor", branch = "main" }
 
 # egraph — the equality-saturation substrate: the named Rust port of
 # mlopt-core's `EGraph`/`Rewrite` spec (`src/egraph.rs` drives it over

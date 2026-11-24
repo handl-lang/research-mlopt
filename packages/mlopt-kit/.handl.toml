@@ -15,7 +15,7 @@
 # inside the clone (host-tensor's .hnl sources live in `src/`, where its
 # `index.hnl` is) so the git arm and the `[patch]` dir resolve the same
 # tree.
-host-tensor = { git = "https://github.com/handl-lang/host-tensor", branch = "main", subdir = "src" }
+host-tensor = { git = "https://github.com/handl-lang/exec-tensor", branch = "main", subdir = "src" }
 
 [patch]
 # The consumer-side local override — the Cargo `[patch]`/dev-link story.
@@ -24,4 +24,4 @@ host-tensor = { git = "https://github.com/handl-lang/host-tensor", branch = "mai
 # the handl-lang sibling-checkout convention (`~/GitHub/handl-lang/*`
 # next to `~/GitHub/handl-lang/graphopt`) — the package dir is
 # host-tensor's `src/`, where its `index.hnl` lives.
-host-tensor = "../../../host-tensor/src"
+host-tensor = "../../../exec-tensor/src"

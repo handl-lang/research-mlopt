@@ -725,31 +725,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "29666d0abbfad1e3dc4dcf6144730dd3a3ab225bbbdac83319345b1b44ccfc1b"
 
 [[patch.unused]]
-name = "handl-kit-core"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "handl-plugin-compile-sexp"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "handl-plugin-compile-handl"
-version = "0.1.0"
-
-[[patch.unused]]
 name = "handl-plugin-codegen-cli"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "compile-cuda"
-version = "0.0.1"
-
-[[patch.unused]]
-name = "compile-triton"
-version = "0.0.1"
-
-[[patch.unused]]
-name = "handl-plugin-lib-lang-parse"
 version = "0.1.0"
 
 [[patch.unused]]
@@ -757,19 +733,27 @@ name = "handl-lib-transform"
 version = "0.1.0"
 
 [[patch.unused]]
-name = "handl-kit-lang"
+name = "handl-kit-data-prelude"
 version = "0.1.0"
 
 [[patch.unused]]
-name = "handl-plugin-lib-lang-compile"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "handl-plugin-lib-lang-run-compiled"
+name = "handl-plugin-lib-lang-parse"
 version = "0.1.0"
 
 [[patch.unused]]
 name = "handl-plugin-codegen-backend-c"
+version = "0.1.0"
+
+[[patch.unused]]
+name = "handl-kit-lang"
+version = "0.1.0"
+
+[[patch.unused]]
+name = "hnl-tool-codegen"
+version = "0.1.0"
+
+[[patch.unused]]
+name = "handl-plugin-compile-term"
 version = "0.1.0"
 
 [[patch.unused]]
@@ -781,7 +765,7 @@ name = "handl-plugin-lib-otlp-std"
 version = "0.1.0"
 
 [[patch.unused]]
-name = "hnl-tool-lint"
+name = "handl-plugin-compile-dot"
 version = "0.1.0"
 
 [[patch.unused]]
@@ -809,23 +793,15 @@ name = "handl-lib-prim-handl"
 version = "0.1.0"
 
 [[patch.unused]]
-name = "handl-plugin-codegen-emitter-python"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "handl-kit-test"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "hnl-tool-test"
-version = "0.1.0"
-
-[[patch.unused]]
 name = "hnl-exec-cranelift"
 version = "0.1.0"
 
 [[patch.unused]]
-name = "handl-plugin-codegen-backend-webidl"
+name = "handl-plugin-codegen-emitter-python"
+version = "0.1.0"
+
+[[patch.unused]]
+name = "handl-plugin-compile-sexp"
 version = "0.1.0"
 
 [[patch.unused]]
@@ -853,15 +829,27 @@ name = "handl-plugin-ffi"
 version = "0.1.0"
 
 [[patch.unused]]
-name = "handl-plugin-compile-js"
-version = "0.1.0"
-
-[[patch.unused]]
 name = "handl-lib-mood"
 version = "0.1.0"
 
 [[patch.unused]]
+name = "handl-plugin-codegen-emitter-file"
+version = "0.1.0"
+
+[[patch.unused]]
+name = "handl-plugin-compile-llvm"
+version = "0.1.0"
+
+[[patch.unused]]
 name = "handl-lib-serialize"
+version = "0.1.0"
+
+[[patch.unused]]
+name = "hnl-exec-cranelift"
+version = "0.1.0"
+
+[[patch.unused]]
+name = "hnl-tool-lint"
 version = "0.1.0"
 
 [[patch.unused]]
@@ -873,11 +861,15 @@ name = "handl-plugin-lib-serialize-toml-c"
 version = "0.1.0"
 
 [[patch.unused]]
-name = "handl-plugin-compile-dot"
+name = "handl-plugin-codegen-backend-webidl"
 version = "0.1.0"
 
 [[patch.unused]]
 name = "handl-lib-type"
+version = "0.1.0"
+
+[[patch.unused]]
+name = "hnl-tool-fmt"
 version = "0.1.0"
 
 [[patch.unused]]
@@ -893,7 +885,15 @@ name = "handl-lib-prim-handl"
 version = "0.1.0"
 
 [[patch.unused]]
-name = "handl-plugin-compile-term"
+name = "compile-cuda"
+version = "0.0.1"
+
+[[patch.unused]]
+name = "hnl-tool-watch"
+version = "0.1.0"
+
+[[patch.unused]]
+name = "hnl-tool-typecheck-handl"
 version = "0.1.0"
 
 [[patch.unused]]
@@ -1041,14 +1041,6 @@ name = "handl-kit-server"
 version = "0.1.0"
 
 [[patch.unused]]
-name = "handl-plugin-compile-llvm"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "handl-kit-pkg"
-version = "0.1.0"
-
-[[patch.unused]]
 name = "handl-lib-comb"
 version = "0.1.0"
 
@@ -1057,7 +1049,15 @@ name = "handl-plugin-lib-lang-lex"
 version = "0.1.0"
 
 [[patch.unused]]
+name = "handl-kit-pkg"
+version = "0.1.0"
+
+[[patch.unused]]
 name = "handl-plugin-lib-otlp-c"
+version = "0.1.0"
+
+[[patch.unused]]
+name = "handl-plugin-compile-js"
 version = "0.1.0"
 
 [[patch.unused]]
@@ -1069,12 +1069,8 @@ name = "handl-kit-stdlib"
 version = "0.1.0"
 
 [[patch.unused]]
-name = "hnl-tool-typecheck-nbe"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "hnl-exec-cranelift"
-version = "0.1.0"
+name = "compile-triton"
+version = "0.0.1"
 
 [[patch.unused]]
 name = "handl-lib-bytes"
@@ -1085,13 +1081,37 @@ name = "handl-plugin-lib-lang-eval"
 version = "0.1.0"
 
 [[patch.unused]]
+name = "handl-kit-test"
+version = "0.1.0"
+
+[[patch.unused]]
+name = "hnl-tool-test"
+version = "0.1.0"
+
+[[patch.unused]]
+name = "hnl-tool-codemod"
+version = "0.1.0"
+
+[[patch.unused]]
+name = "handl-plugin-compile-handl"
+version = "0.1.0"
+
+[[patch.unused]]
 name = "handl-lib-prim"
 version = "0.1.0"
 
 [[patch.unused]]
-name = "handl-plugin-codegen-emitter-file"
+name = "hnl-tool-typecheck-nbe"
 version = "0.1.0"
 
 [[patch.unused]]
-name = "handl-kit-data-prelude"
+name = "handl-plugin-lib-lang-compile"
+version = "0.1.0"
+
+[[patch.unused]]
+name = "handl-kit-core"
+version = "0.1.0"
+
+[[patch.unused]]
+name = "handl-plugin-lib-lang-run-compiled"
 version = "0.1.0"
