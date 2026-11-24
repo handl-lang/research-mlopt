@@ -101,7 +101,7 @@ ADR-0174/0175/0176: [`engine-eqsat`](https://github.com/handl-lang/engine-eqsat)
 [`kit-eqsat`](https://github.com/handl-lang/kit-eqsat) (the canonical
 `LAW_FORMAT = 2` law corpus — kit data, not code), and
 [`source-onnx`](https://github.com/handl-lang/source-onnx) (the Rust
-ONNX→Term-JSON lifter; `kit_onnx.OnnxSource` stays the oracle).
+ONNX→Term-JSON lifter — now canonical: the Python `kit_onnx.OnnxSource` oracle was retired after parity was proven).
 
 The full account — with the measured asides — is
 [`docs/mechanism.md`](https://github.com/handl-lang/mlopt/blob/main/docs/mechanism.md)

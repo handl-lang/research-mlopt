@@ -23,9 +23,9 @@ Honest bounds, stated up front:
   dir) and builds it with ``cargo build --example lift`` when a
   ``source-onnx`` checkout is present but unbuilt.  No binary and no
   checkout → a named decline with the build instructions, never a
-  silent fallback to the Python ``kit_onnx`` lifter (that oracle
-  lives in graphopt's domain packages, which mlopt does not depend
-  on — a fallback would hide which producer ran).
+  silent fallback to the retired Python ``kit_onnx`` lifter
+  (parity with this crate was proven and the oracle removed — a
+  fallback would hide which producer ran).
 * **Refusals surface verbatim.**  The lifter's named refusals
   (``unsupported ONNX op …``, ``onnx import error: …`` — opset outside
   13..=21, non-default domains, the control-flow/random/quantized
@@ -35,7 +35,7 @@ Honest bounds, stated up front:
 * **Weights are REAL.**  Initializers and shaped ``Constant`` outputs
   arrive as a safetensors side channel, parsed here into NumPy arrays
   keyed by ``Param`` name — the same ``(IR, leaves)`` pair
-  ``kit_onnx.OnnxSource`` returns.  Half-precision payloads bind
+  the retired ``kit_onnx.OnnxSource`` returned.  Half-precision payloads bind
   honestly: ``BF16`` decodes losslessly to float32 (bf16 is the high
   half of f32) and ``F16``/``BF16`` param tensors upcast to float32
   at bind time — the verify convention is f32 params against f32
@@ -301,7 +301,7 @@ def _sanitize_leaf_name(name: str, used: set[str]) -> str:
     ``layers.0.self_attn…``, ``onnx::Add_414``) — legal in the IR but
     not as ``torch.nn.Module`` attribute names, which is how
     ``kit_torch.torch_eval.IRModule`` binds params
-    (``setattr(self, name, p)`` rejects ``"."``).  The Python
+    (``setattr(self, name, p)`` rejects ``"."``).  The retired Python
     ``OnnxSource`` never hit this because it only lowered through
     ``OnnxSink``; the mlopt pipeline lowers through ``IRModule``, so
     the adapter renames Param leaves *before* decode — consistently
@@ -545,9 +545,10 @@ class OnnxRustSource(Source):
     """``mlopt_core.ports.Source`` over a pre-lifted ONNX term.
 
     ``to_ir`` returns the ``(IR, param_values)`` the adapter built at
-    load time — the same contract ``OnnxSource``/``HnlSource``
-    fulfil.  ``model``/``example_inputs`` are accepted for the port
-    signature and ignored: the lift already happened.
+    load time — the same contract ``HnlSource`` fulfils (and the
+    retired ``OnnxSource`` did).  ``model``/``example_inputs`` are
+    accepted for the port signature and ignored: the lift already
+    happened.
     """
 
     def __init__(self, ir: IR, param_values: dict[str, Any]) -> None:
@@ -555,7 +556,8 @@ class OnnxRustSource(Source):
         self._param_values = param_values
         #: The lifter's ``input_dtypes`` side channel — ONNX declares
         #: element types the shape-only ``Var.typ`` cannot carry (the
-        #: documented source-side workaround, same as ``OnnxSource``).
+        #: documented source-side workaround, same as the retired
+        #: ``OnnxSource`` used).
         self.input_dtypes: dict[str, str] = {}
 
     def to_ir(self, model: Any, example_inputs: Any) -> tuple[IR, dict[str, Any]]:

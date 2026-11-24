@@ -1,55 +1,47 @@
 """ONNX codec-table drift guards — ADR-0178 WP0a.
 
-``kit_onnx.opmap`` (IR → ONNX, ~169 entries) and
-``kit_onnx.liftmap`` (ONNX → IR, ~107 entries) were the last
-unguarded codec tables (``host/project/reports/
-p3_codec_consolidation_spike.md`` §1b).  This file guards them the
-way ``test_surface_table_drift.py`` guards the hnl/modelproj/torch
+``kit_onnx.opmap`` (IR → ONNX, ~169 entries) is the guarded codec
+table (``host/project/reports/
+p3_codec_consolidation_spike.md`` §1b).  The other direction —
+``kit_onnx.liftmap`` (ONNX → IR) — was retired when the Python
+lifter proved at parity with the Rust ``source-onnx`` lifter, which
+is now the single lift table.  This file guards the sink table the
+way
+``test_surface_table_drift.py`` guards the hnl/modelproj/torch
 tables — behavioral probes against the real emitters, not parallel
 name tables:
 
-* **Covered-set pins.**  ``ONNX_BINDINGS`` / ``ONNX_LIFTS`` key sets
-  are pinned literally — a new mapping is a loud diff, and the
-  ``_PROBE`` table below must grow with it (the completeness assert
-  fails otherwise).
-* **IR-op reality.**  Every IR op name either table claims
-  (``ONNX_BINDINGS`` keys; the names ``ONNX_LIFTS`` lifters mint —
-  recovered by AST-scanning the module's ``g.mint("...")`` call
-  sites plus the four declarative tables) must resolve to real IR
-  vocabulary: ``opmeta.REGISTRY`` | ``HOST_BINDINGS`` |
-  ``_IR_TO_TORCH`` | ``ATEN_TO_IR`` targets (set union).  Names with no
-  ``tensor.*`` host port must sit in the pinned ``_NON_HOST_OPS``
-  exception list — adapter/ONNX-only vocabulary
-  (``relu_``/``hstack``/``pack``/the dtype-cast spellings/…), the
-  same posture as ``_TORCH_ONLY_ATTR_OPS`` in
-  ``test_surface_table_drift.py``.
-* **ONNX-schema reality + arity.**  Every ``ONNX_LIFTS`` key is a
-  real ONNX ``op_type`` (``onnx.defs`` schema in the default domain
-  within the lift opset window).  Every ``ONNX_BINDINGS`` builder is
-  *run* against a canonical probe term through the real
+* **Covered-set pins.**  The ``ONNX_BINDINGS`` key set is pinned
+  literally — a new mapping is a loud diff, and the ``_PROBE``
+  table below must grow with it (the completeness assert fails
+  otherwise).
+* **IR-op reality.**  Every IR op name ``ONNX_BINDINGS`` claims must
+  resolve to real IR vocabulary: ``opmeta.REGISTRY`` |
+  ``HOST_BINDINGS`` | ``_IR_TO_TORCH`` | ``ATEN_TO_IR`` targets
+  (set union).  Names with no ``tensor.*`` host port must sit in
+  the pinned ``_NON_HOST_OPS`` exception list —
+  adapter/ONNX-only vocabulary (``relu_``/``hstack``/``pack``/the
+  dtype-cast spellings/…), the same posture as
+  ``_TORCH_ONLY_ATTR_OPS`` in ``test_surface_table_drift.py``.
+* **ONNX-schema reality + arity.**  Every ``ONNX_BINDINGS`` builder
+  is *run* against a canonical probe term through the real
   ``GraphBuilder``; each emitted node's ``op_type`` must have an
   opset-18 schema (the sink's pinned opset) and its input count must
   sit inside the schema's ``min_input``/``max_input`` — the same
   arity discipline ``_check_emitted`` applies to ``tensor.*``
-  signatures.  The declarative lift tables get the mirror-image
-  check: ``_UNARY`` ops are exactly 1-input, ``_BINARY`` exactly
-  2-input, ``_VARIADIC`` genuinely variadic, ``_REDUCERS`` never
-  more than data+axes inputs across the whole opset window — so a
-  malformed node cannot mint an IR op of the wrong arity silently.
+  signatures.
 
 Why no IR-arity ↔ host-port arity comparison (the ``_sig_arity``
 half of the sibling guard): IR ops carry dims/axes/shapes as *attrs*
 while ``tensor.*`` ports take them as *positional* arguments, so the
 counts are not comparable without per-op lowering knowledge — the
-ONNX-schema bounds above are the honest arity contract for these
-tables.  Host-port *resolution* (existence + emittable status) is
+ONNX-schema bounds above are the honest arity contract for this
+table.  Host-port *resolution* (existence + emittable status) is
 still asserted.
 """
 
 from __future__ import annotations
 
-import ast
-from pathlib import Path
 from typing import Any
 
 import pytest
@@ -62,7 +54,6 @@ from tests.test_surface_table_drift import _EMITTABLE
 pytest.importorskip("onnx")
 
 _OPSET = 18  # OnnxSink's pinned opset (sink.py default)
-_OPSET_WINDOW = range(13, 22)  # lift.py MIN_OPSET..MAX_OPSET
 
 _T = TensorType((2, 3))
 
@@ -690,289 +681,3 @@ def _declarative_names() -> set[str]:
         | set(_REDUCERS)
         | set(_CASTS)
     )
-
-
-# ---------------------------------------------------------------------------
-#  liftmap — ONNX -> IR (ONNX_LIFTS, 107 entries)
-# ---------------------------------------------------------------------------
-
-_ONNX_LIFTS_OPS = frozenset(
-    {
-        "Abs",
-        "Acos",
-        "Acosh",
-        "Add",
-        "And",
-        "ArgMax",
-        "ArgMin",
-        "Asin",
-        "Asinh",
-        "Atan",
-        "Atanh",
-        "BatchNormalization",
-        "BitwiseAnd",
-        "BitwiseOr",
-        "Cast",
-        "CastLike",
-        "Ceil",
-        "Celu",
-        "Clip",
-        "Concat",
-        "ConstantOfShape",
-        "Conv",
-        "Cos",
-        "Cosh",
-        "CumSum",
-        "Div",
-        "Dropout",
-        "Einsum",
-        "Elu",
-        "Equal",
-        "Erf",
-        "Exp",
-        "Expand",
-        "Flatten",
-        "Floor",
-        "Gather",
-        "GatherElements",
-        "Gelu",
-        "Gemm",
-        "GlobalAveragePool",
-        "GlobalMaxPool",
-        "Greater",
-        "GreaterOrEqual",
-        "GroupNormalization",
-        "HardSigmoid",
-        "HardSwish",
-        "Identity",
-        "InstanceNormalization",
-        "IsInf",
-        "IsNaN",
-        "LayerNormalization",
-        "LeakyRelu",
-        "Less",
-        "LessOrEqual",
-        "Log",
-        "LogSoftmax",
-        "MatMul",
-        "Max",
-        "MaxPool",
-        "Mean",
-        "Min",
-        "Mish",
-        "Mod",
-        "Mul",
-        "Neg",
-        "NonZero",
-        "Not",
-        "OneHot",
-        "Or",
-        "Pad",
-        "Pow",
-        "Range",
-        "Reciprocal",
-        "ReduceL1",
-        "ReduceL2",
-        "ReduceMax",
-        "ReduceMean",
-        "ReduceMin",
-        "ReduceProd",
-        "ReduceSum",
-        "Relu",
-        "Reshape",
-        "Round",
-        "Selu",
-        "Sigmoid",
-        "Sign",
-        "Sin",
-        "Sinh",
-        "Slice",
-        "Softmax",
-        "Softplus",
-        "Softsign",
-        "Split",
-        "Sqrt",
-        "Squeeze",
-        "Sub",
-        "Sum",
-        "Tan",
-        "Tanh",
-        "ThresholdedRelu",
-        "Tile",
-        "TopK",
-        "Transpose",
-        "Trilu",
-        "Unsqueeze",
-        "Where",
-        "Xor",
-    }
-)
-
-
-def _minted_ir_ops() -> frozenset[str]:
-    """Every IR op name ``liftmap`` can mint.
-
-    Recovered from the module's own source: string literals passed as
-    the first arg of ``g.mint(...)`` calls, plus the IR targets of the
-    four declarative tables (``_simple``/``_fold``/``_reducer``/
-    ``_vector_norm``/``_arg_reducer``/``_global_pool``/``_trilu``/
-    ``_softmax`` close over their argument).  An AST scan — not a
-    parallel table — so a new ``g.mint("typo", ...)`` is caught by
-    the oracle check below.
-    """
-    import kit_onnx.liftmap as lm
-
-    path = Path(lm.__file__)
-    tree = ast.parse(path.read_text())
-    minted: set[str] = set()
-
-    # The lifter factories close over their IR-op argument
-    # (``_simple(ir_op)`` & friends) — the minted name arrives as a
-    # call argument, not a ``g.mint`` literal, so collect string
-    # first-args of the factory calls too.
-    _FACTORIES = {
-        "_simple",
-        "_fold",
-        "_reducer",
-        "_arg_reducer",
-        "_softmax",
-        "_global_pool",
-    }
-
-    class _MintVisitor(ast.NodeVisitor):
-        def visit_Call(self, node: ast.Call) -> None:
-            func = node.func
-            name = (
-                func.attr
-                if isinstance(func, ast.Attribute)
-                else func.id
-                if isinstance(func, ast.Name)
-                else ""
-            )
-            if (
-                (name == "mint" or name in _FACTORIES)
-                and node.args
-                and isinstance(node.args[0], ast.Constant)
-                and isinstance(node.args[0].value, str)
-            ):
-                minted.add(node.args[0].value)
-            self.generic_visit(node)
-
-    _MintVisitor().visit(tree)
-    for table in (lm._UNARY, lm._BINARY, lm._VARIADIC, lm._REDUCERS):
-        minted.update(table.values())
-    return frozenset(minted)
-
-
-def _schema_in_window(op_type: str) -> bool:
-    """Whether *op_type* has a default-domain schema in the lift window."""
-    for v in _OPSET_WINDOW:
-        try:
-            defs.get_schema(op_type, v, "")
-            return True
-        except defs.SchemaError:
-            continue
-    return False
-
-
-def _schema_at(op_type: str, opset: int) -> Any:
-    return defs.get_schema(op_type, opset, "")
-
-
-class TestOnnxLiftsTable:
-    def test_covered_op_set_is_pinned(self) -> None:
-        """``ONNX_LIFTS`` keys are exactly this set — additions loud."""
-        from kit_onnx.liftmap import ONNX_LIFTS
-
-        assert frozenset(ONNX_LIFTS) == _ONNX_LIFTS_OPS
-
-    def test_every_key_is_a_real_onnx_op(self) -> None:
-        """Forward guard — each lifted ``op_type`` has a real schema."""
-        from kit_onnx.liftmap import ONNX_LIFTS
-
-        missing = sorted(
-            k for k in ONNX_LIFTS if not _schema_in_window(k)
-        )
-        assert not missing, (
-            "ONNX_LIFTS names op_types with no ONNX schema in the "
-            f"default domain within opsets {_OPSET_WINDOW.start}.."
-            f"{_OPSET_WINDOW.stop - 1}: {missing}"
-        )
-
-    def test_minted_ir_ops_are_real(self) -> None:
-        """Every IR op the lifters mint resolves to real vocabulary."""
-        oracle = _ir_op_oracle()
-        missing = sorted(_minted_ir_ops() - oracle)
-        assert not missing, (
-            "liftmap mints IR ops that are not real vocabulary: "
-            f"{missing}"
-        )
-
-    def test_minted_ir_ops_host_port_or_declared(self) -> None:
-        """Minted names with no host port sit in ``_NON_HOST_OPS``."""
-        ops = host_ops()
-        assert ops, "host_surface.json loaded empty — dep broke"
-        missing = sorted(
-            op
-            for op in _minted_ir_ops()
-            if f"tensor.{op}" not in ops
-            or ops[f"tensor.{op}"]["status"] not in _EMITTABLE
-        )
-        unexpected = set(missing) - _NON_HOST_OPS
-        assert not unexpected, (
-            "liftmap mints ops with no emittable tensor.* port and "
-            f"no declared exception: {sorted(unexpected)}"
-        )
-
-    def test_declarative_arity_compat(self) -> None:
-        """The table-driven lifts cannot mint a wrong-arity IR op.
-
-        ``_simple`` mints the IR op over *all* of the node's inputs,
-        so the ONNX schema's input bounds ARE the minted arity: a
-        unary ONNX op must be strictly 1-input (a stray second input
-        would mint ``neg(x, y)``), a binary strictly 2, a variadic
-        fold genuinely variadic, and a reducer never more than
-        data+axes.  Checked at opset 18 (the sink's pin) for the
-        exact-arity tables and across the whole lift window for the
-        reducers (axes moved attribute→input at opset 18).
-        """
-        from kit_onnx.liftmap import (
-            _BINARY,
-            _REDUCERS,
-            _UNARY,
-            _VARIADIC,
-        )
-
-        for op_type in _UNARY:
-            s = _schema_at(op_type, _OPSET)
-            assert (s.min_input, s.max_input) == (1, 1), (
-                f"{op_type}: _UNARY lift mints a 1-arg IR op but the "
-                f"schema allows {s.min_input}..{s.max_input} inputs"
-            )
-        for op_type in _BINARY:
-            s = _schema_at(op_type, _OPSET)
-            assert (s.min_input, s.max_input) == (2, 2), (
-                f"{op_type}: _BINARY lift mints a 2-arg IR op but "
-                f"the schema allows {s.min_input}..{s.max_input} "
-                "inputs"
-            )
-        for op_type in _VARIADIC:
-            s = _schema_at(op_type, _OPSET)
-            assert s.max_input > 2, (
-                f"{op_type}: _VARIADIC lift folds N inputs but the "
-                f"schema caps at {s.max_input}"
-            )
-        for op_type in _REDUCERS:
-            # Across the window the node may carry data only
-            # (axes attr, opset <18) or data+axes (opset >=18); the
-            # lifter reads both.  Never more.
-            for v in _OPSET_WINDOW:
-                try:
-                    s = _schema_at(op_type, v)
-                except defs.SchemaError:
-                    continue
-                assert s.min_input <= 1 and s.max_input <= 2, (
-                    f"{op_type}@opset{v}: reducer schema allows "
-                    f"{s.min_input}..{s.max_input} inputs — the "
-                    "lifter consumes data + optional axes only"
-                )

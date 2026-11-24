@@ -1,13 +1,21 @@
 """Differential parity: ``source-onnx`` (Rust) vs ``OnnxSource`` (Python).
 
+**RETIRED — archival.**  Parity was proven (all 107 ops, 32/38 models
+exact term parity, refusals verbatim — see
+``tool-codegen-onnx/tools/onnx_lift_parity.py``) and the Python
+oracle was removed with ``kit-onnx``'s lift half: ``kit_onnx.lift``,
+``OnnxSource`` and ``OnnxImportError`` no longer exist.  The Python
+side of this driver resolves lazily and fails loudly if run; kept
+for provenance.
+
 ADR-0176's verification gate — the spike's recommendation, "two
 producers, one wire contract" (``host/project/reports/
 onnx_lifter_rust_spike.md`` §verification).  The Rust crate
 ``source-onnx`` lifts an ``.onnx`` model to the Term-JSON
 envelope + a safetensors leaf side channel **without Python**; the
 Python ``kit_onnx.OnnxSource`` (``lift_model`` +
-``mlopt_core.term_json.term_to_json``) is the oracle.  This driver
-runs the same model through both and compares.
+``mlopt_core.term_json.term_to_json``) was the oracle.  This driver
+ran the same model through both and compared.
 
 The comparison boundary
 -----------------------
@@ -90,7 +98,6 @@ _SOURCE_ONNX = Path(
 )
 
 from kit_onnx.arrays import DTYPE_NAMES  # noqa: E402
-from kit_onnx.lift import lift_model  # noqa: E402
 from mlopt_core.term import (  # noqa: E402
     Const,
     Op,
@@ -180,17 +187,25 @@ _NUMPY_TO_NAME = {
 }
 
 
+def _oracle_lift_model():
+    """The retired Python oracle — lazy so this archival driver still
+    imports; calling it fails loudly."""
+    try:
+        from kit_onnx.lift import lift_model
+    except ImportError as e:
+        raise RuntimeError(
+            "kit_onnx.lift is retired (parity with source-onnx "
+            "proven) — this differential driver is archival"
+        ) from e
+    return lift_model
+
+
 def _py_refusal(e: BaseException) -> dict:
     """Classify a Python lift failure for refusal-parity comparison."""
-    from kit_onnx.errors import (
-        OnnxImportError,
-        UnsupportedOnnxOpError,
-    )
+    from kit_onnx.errors import UnsupportedOnnxOpError
 
     if isinstance(e, UnsupportedOnnxOpError):
         return {"family": "unsupported", "op": e.op, "detail": e.detail}
-    if isinstance(e, OnnxImportError):
-        return {"family": "import", "detail": str(e)}
     return {"family": "error", "detail": f"{type(e).__name__}: {e}"}
 
 
@@ -205,7 +220,7 @@ def _shape_tuple(v: Var) -> tuple:
 def _py_lift(path: Path) -> dict:
     """Python oracle: ``lift_model`` + ``term_to_json`` + leaf manifest."""
     try:
-        res = lift_model(str(path))
+        res = _oracle_lift_model()(str(path))
     except (
         Exception
     ) as e:  # refusal or import error — both are data here
@@ -1465,7 +1480,7 @@ def _compare_eval(
     # Leaf payloads: Python side re-derives arrays from lift_model;
     # Rust side decodes the safetensors buffer.
     try:
-        res = lift_model(str(model))
+        res = _oracle_lift_model()(str(model))
         leaf_arrays = {k: np.asarray(v) for k, v in res.leaves.items()}
     except Exception as e:
         return {"verdict": "py-releaf-error", "detail": str(e)}
