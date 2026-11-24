@@ -60,7 +60,7 @@ fn stdin_program_evaluates_to_the_tensor_wire_form() {
 #[test]
 fn do_block_bindings_evaluate() {
     let (ok, stdout, stderr) = run_stdin(
-        "do {\n  a :: tensor.from_list([1, 2])\n  b :: tensor.from_list([10, 20])\n  tensor.add(a, b)\n}",
+        "do {\n  a := tensor.from_list([1, 2])\n  b := tensor.from_list([10, 20])\n  tensor.add(a, b)\n}",
     );
     assert!(ok, "hnl-run failed: {stderr}");
     let value: Value = serde_json::from_str(stdout.trim()).unwrap();

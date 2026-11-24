@@ -49,10 +49,10 @@ channel_scales := (gs, vs, eps) ~> while { gs: gs, vs: vs, acc: [] } {
 --- `conv_bn` on every input — the minted rewrite *evaluated*, not
 --- stated.
 export conv_bn_fold := (x, w, b, g, be, m, v, eps) ~> do {
-  s :: tensor.from_list(channel_scales(tensor.to_list(g), tensor.to_list(v), eps))
-  cout :: tensor.shape(w)[0]
-  w2 :: tensor.mul(w, tensor.reshape(s, [cout, 1, 1, 1]))
-  b2 :: tensor.add(tensor.mul(b, s), tensor.sub(be, tensor.mul(s, m)))
+  s := tensor.from_list(channel_scales(tensor.to_list(g), tensor.to_list(v), eps))
+  cout := tensor.shape(w)[0]
+  w2 := tensor.mul(w, tensor.reshape(s, [cout, 1, 1, 1]))
+  b2 := tensor.add(tensor.mul(b, s), tensor.sub(be, tensor.mul(s, m)))
   tensor.conv2d(x, w2, b2)
 }
 
