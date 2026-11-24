@@ -17,7 +17,11 @@ dependencies = [
     "kit-cuda",
     "kit-discovery",
     "discoverykit",
-    "kit-onnx",
+    # mlopt-kit[onnxruntime] (T-075 b/c): the ONNX backend folded into
+    # packages/mlopt-kit's Python surface (mlopt_kit.onnx) when the
+    # kit-onnx repo was dissolved — the onnxruntime extra arms
+    # OnnxExecutor.
+    "mlopt-kit[onnxruntime]",
     "kit-host-tensor",
     "mlopt-dtypes",
     "gamekit",
@@ -123,13 +127,13 @@ packages = []
 # --- uv workspace: the domain packages ---------------------------
 [tool.uv.workspace]
 members = ["packages/*"]
-# mlopt-kit and mlopt-experiments are Rust-only crates (the handl
-# composition seam + the paper's evidence crate) — no pyproject.toml,
-# so they are excluded from the uv workspace.  mlopt-handl-peer is the
-# maturin/PyO3 handl spike — excluded for the same reason.
-# (mlopt-native moved to handl-lang/eqsat — plan 0032 phase 4.)
+# mlopt-experiments is a Rust-only crate (the paper's evidence crate)
+# and mlopt-handl-peer the maturin/PyO3 handl spike — no pyproject.toml
+# of the setuptools/hatchling kind, so they stay excluded.  (mlopt-kit
+# gained a Python surface — mlopt_kit.onnx — at T-075 b/c and is a
+# normal workspace member now.  mlopt-native moved to
+# handl-lang/eqsat — plan 0032 phase 4.)
 exclude = [
-    "packages/mlopt-kit",
     "packages/mlopt-experiments",
     "packages/mlopt-handl-peer",
 ]
@@ -140,8 +144,8 @@ exclude = [
 # pinned git deps on ``packages/`` subdirectories at the ``v0.1.0``
 # tag (git-URL-at-tag distribution; see
 # docs/reports/git_url_distribution.md).  Bump the tag on releases.
-mlopt-core = { git = "https://github.com/handl-lang/eqsat.git", subdirectory = "packages/mlopt-core", tag = "v0.1.14" }
-mlopt-orchestrator = { git = "https://github.com/handl-lang/eqsat.git", subdirectory = "packages/mlopt-orchestrator", tag = "v0.1.14" }
+mlopt-core = { git = "https://github.com/handl-lang/eqsat.git", subdirectory = "packages/mlopt-core", tag = "v0.1.15" }
+mlopt-orchestrator = { git = "https://github.com/handl-lang/eqsat.git", subdirectory = "packages/mlopt-orchestrator", tag = "v0.1.15" }
 gamekit = { git = "https://github.com/handl-lang/gamekit.git", subdirectory = "packages/gamekit", tag = "v0.1.16" }
 benchkit = { git = "https://github.com/handl-lang/gamekit.git", subdirectory = "packages/benchkit", tag = "v0.1.16" }
 # discoverykit (plan 0034 phase 1): the domain-free mining core
@@ -152,22 +156,44 @@ discoverykit = { git = "https://github.com/handl-lang/discoverykit.git", subdire
 # handl-lang/kit-torch — pinned git dep at the v0.1.4 tag.
 kit-torch = { git = "https://github.com/handl-lang/mlopt-torch.git", tag = "v0.1.8" }
 # kit-carriers (P3 Step D-1b): the semantic carriers, split to
-# handl-lang/kit-carriers — pinned git dep at the v0.1.5 tag.
+# handl-lang/mlopt-carriers — pinned git dep at the v0.1.8 tag.
+# NOTE: kit-discovery v0.1.11's manifest still sources the pre-rename
+# ``kit-carriers.git`` URL (GitHub 301 → mlopt-carriers); uv treats the
+# two spellings as conflicting sources, so the override below pins the
+# canonical URL workspace-wide until a kit-discovery tag carries the
+# repin (mlopt-discovery@2dad41f).
 kit-carriers = { git = "https://github.com/handl-lang/mlopt-carriers.git", tag = "v0.1.8" }
 # kit-cuda (P3 Step D-1c): the CUDA-graph delivery runner, split to
 # handl-lang/kit-cuda — pinned git dep at the v0.1.5 tag.
 kit-cuda = { git = "https://github.com/handl-lang/kit-cuda.git", tag = "v0.1.9" }
 kit-discovery = { git = "https://github.com/handl-lang/mlopt-discovery.git", tag = "v0.1.11" }
-kit-onnx = { git = "https://github.com/handl-lang/kit-onnx.git", tag = "v0.1.6" }
+# mlopt-kit (T-075 b/c): the kit-onnx dissolution — the ONNX backend
+# now lives in packages/mlopt-kit's Python surface (mlopt_kit.onnx);
+# the [onnxruntime] extra is taken on the dependency line above.
+mlopt-kit = { workspace = true }
 # kit-host-tensor (P3 Step D-1f, bridge-only since the P-010
 # dissolution): the PyO3 tensor.* bridge + HOST_BINDINGS op-set
 # oracle the cross-stack drift tests import — pinned git dep.
 kit-host-tensor = { git = "https://github.com/handl-lang/kit-host-tensor.git", tag = "v0.1.6" }
-mlopt-dtypes = { git = "https://github.com/handl-lang/eqsat.git", subdirectory = "packages/mlopt-dtypes", tag = "v0.1.14" }
+mlopt-dtypes = { git = "https://github.com/handl-lang/eqsat.git", subdirectory = "packages/mlopt-dtypes", tag = "v0.1.15" }
 # packages/mlopt (P3 Step D-2): the product member — workspace dep so
 # `uv sync` installs it and its `mlopt` console script lands in
 # .venv/bin.
 mlopt = { workspace = true }
+
+[tool.uv]
+# See the kit-carriers source note above — force the canonical
+# (post-rename) URL for every requirement named ``kit-carriers``,
+# including kit-discovery v0.1.11's transitive source.
+override-dependencies = [
+    "kit-carriers @ git+https://github.com/handl-lang/mlopt-carriers.git@v0.1.8",
+    # eqsat v0.1.15 carries the sink-only ``source=None`` backend
+    # registration ``mlopt_kit.onnx.register()`` needs (ex-kit-onnx
+    # pinned it too); transitive manifests still say v0.1.14.
+    "mlopt-core @ git+https://github.com/handl-lang/eqsat.git@v0.1.15#subdirectory=packages/mlopt-core",
+    "mlopt-orchestrator @ git+https://github.com/handl-lang/eqsat.git@v0.1.15#subdirectory=packages/mlopt-orchestrator",
+    "mlopt-dtypes @ git+https://github.com/handl-lang/eqsat.git@v0.1.15#subdirectory=packages/mlopt-dtypes",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -213,8 +239,9 @@ ignore_names = [
 # game kernel is substrate-free" to handl-lang/gamekit.  What stays:
 # the domain stack's own layering — discovery sits above the backend
 # family.  (kit-onnx — the ONNX backend, formerly mlopt-onnx — split to
-# handl-lang/kit-onnx in P3 Step D-1; kit-carriers and kit-cuda
-# followed in D-1b/D-1c — their layering contracts live there.)
+# handl-lang/kit-onnx in P3 Step D-1 and folded into packages/mlopt-kit's
+# Python surface as ``mlopt_kit.onnx`` at T-075 b/c; kit-carriers and
+# kit-cuda followed in D-1b/D-1c — their layering contracts live there.)
 [tool.importlinter]
 root_packages = [
     "kit_torch",
@@ -278,6 +305,14 @@ forbidden_modules = [
     # reach up into the CUDA-graph runner (P3 Step D-1c/D-1d).
     "kit_cuda",
 ]
+
+# NOTE: ``mlopt_kit.onnx`` (the ONNX backend, ex-``kit_onnx``, folded
+# into packages/mlopt-kit at T-075 b/c) is a *peer* of the torch
+# backend — torch-free by contract.  A static import-linter contract
+# was tried and dropped: making it a grimp root pulls onnx/onnxruntime
+# into the analyzed graph and the build does not finish in gate time.
+# The subprocess proof lives in tests/test_onnx_sink.py
+# (``test_the_onnx_backend_imports_without_torch``).
 
 [tool.ruff]
 target-version = "py311"

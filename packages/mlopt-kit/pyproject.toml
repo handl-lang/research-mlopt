@@ -1,0 +1,24 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mlopt-kit"
+version = "0.1.0"
+description = "mlopt's handl composition seam (Rust crate + hnl-run) plus its Python surface: mlopt_kit.onnx, the ONNX backend folded in from the dissolved kit-onnx repo (T-075 b/c)."
+license = "MIT"
+requires-python = ">=3.13"
+dependencies = [
+    "mlopt-core",
+    "mlopt-dtypes",
+    "onnx>=1.16",
+    "numpy>=1.24",
+]
+
+[project.optional-dependencies]
+# onnxruntime is the executor's engine — kept optional and imported
+# lazily (OnnxExecutor.__init__) so lowering/saving works without it.
+onnxruntime = ["onnxruntime>=1.17"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["python/mlopt_kit"]

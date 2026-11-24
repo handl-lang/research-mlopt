@@ -24,12 +24,14 @@ laws/executors — `kit-carriers`, **split to
 `packages/mlopt-cuda`; pin `kit-cuda` git dep, import
 `kit_cuda`; package-bound tests travelled with it);
 `mlopt-orchestrator` — the backend-neutral pipeline (eqsat);
-the ONNX backend `kit-onnx` — ADR 0006: `OnnxSink` lowers IR to
+the ONNX backend — ADR 0006: `OnnxSink` lowers IR to
 a checked ONNX artifact, verified through onnxruntime (the ONNX→IR
 lift was retired after parity with the Rust `source-onnx` lifter was
-proven — `kit-onnx` is sink-only, `register()` seats `source=None`) —
-**split to `handl-lang/kit-onnx` in P3 Step D-1** (was
-`packages/mlopt-onnx`; pin `kit-onnx` git dep, import `kit_onnx`);
+proven — the backend is sink-only, `register()` seats `source=None`);
+**folded into `packages/mlopt-kit`'s Python surface at T-075 b/c**
+(was `handl-lang/kit-onnx`, import `kit_onnx`; now import
+`mlopt_kit.onnx`, dep `mlopt-kit[onnxruntime]` — the kit-onnx repo
+is deleted);
 `kit-discovery` — the law-discovery engine, formerly
 `tools/law_*.py`; **split to `handl-lang/kit-discovery` in P3
 Step D-1d** (was `packages/mlopt-discovery`; pin `kit-discovery`

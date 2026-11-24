@@ -3,7 +3,7 @@
 **RETIRED — archival.**  Parity was proven (all 107 ops, 32/38 models
 exact term parity, refusals verbatim — see
 ``tool-codegen-onnx/tools/onnx_lift_parity.py``) and the Python
-oracle was removed with ``kit-onnx``'s lift half: ``kit_onnx.lift``,
+oracle was removed with ``mlopt-kit``'s lift half: ``mlopt_kit.onnx.lift``,
 ``OnnxSource`` and ``OnnxImportError`` no longer exist.  The Python
 side of this driver resolves lazily and fails loudly if run; kept
 for provenance.
@@ -13,7 +13,7 @@ producers, one wire contract" (``host/project/reports/
 onnx_lifter_rust_spike.md`` §verification).  The Rust crate
 ``source-onnx`` lifts an ``.onnx`` model to the Term-JSON
 envelope + a safetensors leaf side channel **without Python**; the
-Python ``kit_onnx.OnnxSource`` (``lift_model`` +
+Python ``mlopt_kit.onnx.OnnxSource`` (``lift_model`` +
 ``mlopt_core.term_json.term_to_json``) was the oracle.  This driver
 ran the same model through both and compared.
 
@@ -97,7 +97,7 @@ _SOURCE_ONNX = Path(
     )
 )
 
-from kit_onnx.arrays import DTYPE_NAMES  # noqa: E402
+from mlopt_kit.onnx.arrays import DTYPE_NAMES  # noqa: E402
 from mlopt_core.term import (  # noqa: E402
     Const,
     Op,
@@ -120,7 +120,7 @@ try:
         Path(_onnx.__file__).parent
         / "backend/test/data/light/light_resnet50.onnx"
     )
-except Exception:  # pragma: no cover - onnx is a hard dep of kit-onnx
+except Exception:  # pragma: no cover - onnx is a hard dep of mlopt-kit
     _RESNET_DEFAULT = Path("/nonexistent/light_resnet50.onnx")
 
 _WHISPER_DEFAULT = (
@@ -191,10 +191,10 @@ def _oracle_lift_model():
     """The retired Python oracle — lazy so this archival driver still
     imports; calling it fails loudly."""
     try:
-        from kit_onnx.lift import lift_model
+        from mlopt_kit.onnx.lift import lift_model
     except ImportError as e:
         raise RuntimeError(
-            "kit_onnx.lift is retired (parity with source-onnx "
+            "mlopt_kit.onnx.lift is retired (parity with source-onnx "
             "proven) — this differential driver is archival"
         ) from e
     return lift_model
@@ -202,7 +202,7 @@ def _oracle_lift_model():
 
 def _py_refusal(e: BaseException) -> dict:
     """Classify a Python lift failure for refusal-parity comparison."""
-    from kit_onnx.errors import UnsupportedOnnxOpError
+    from mlopt_kit.onnx.errors import UnsupportedOnnxOpError
 
     if isinstance(e, UnsupportedOnnxOpError):
         return {"family": "unsupported", "op": e.op, "detail": e.detail}

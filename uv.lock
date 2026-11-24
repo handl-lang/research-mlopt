@@ -11,7 +11,14 @@ resolution-markers = [
 [manifest]
 members = [
     "mlopt",
+    "mlopt-kit",
     "mlopt-meta",
+]
+overrides = [
+    { name = "kit-carriers", git = "https://github.com/handl-lang/mlopt-carriers.git?tag=v0.1.8" },
+    { name = "mlopt-core", git = "https://github.com/handl-lang/eqsat.git?subdirectory=packages%2Fmlopt-core&tag=v0.1.15" },
+    { name = "mlopt-dtypes", git = "https://github.com/handl-lang/eqsat.git?subdirectory=packages%2Fmlopt-dtypes&tag=v0.1.15" },
+    { name = "mlopt-orchestrator", git = "https://github.com/handl-lang/eqsat.git?subdirectory=packages%2Fmlopt-orchestrator&tag=v0.1.15" },
 ]
 
 [[package]]
@@ -1452,18 +1459,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "kit-onnx"
-version = "0.1.0"
-source = { git = "https://github.com/handl-lang/kit-onnx.git?tag=v0.1.6#dfee2e8cb8363e044dd6bf24b19cc0dc1a780731" }
-dependencies = [
-    { name = "mlopt-core" },
-    { name = "mlopt-dtypes" },
-    { name = "numpy" },
-    { name = "onnx" },
-    { name = "onnxruntime" },
-]
-
-[[package]]
 name = "kit-torch"
 version = "0.1.0"
 source = { git = "https://github.com/handl-lang/mlopt-torch.git?tag=v0.1.8#577e7cdd8d915ec9d89b720d24588fba0bc44dfd" }
@@ -1932,8 +1927,8 @@ requires-dist = [
     { name = "kit-discovery", git = "https://github.com/handl-lang/mlopt-discovery.git?tag=v0.1.11" },
     { name = "kit-torch", git = "https://github.com/handl-lang/mlopt-torch.git?tag=v0.1.8" },
     { name = "loguru", marker = "extra == 'kokoro'" },
-    { name = "mlopt-core", git = "https://github.com/handl-lang/eqsat.git?subdirectory=packages%2Fmlopt-core&tag=v0.1.14" },
-    { name = "mlopt-orchestrator", git = "https://github.com/handl-lang/eqsat.git?subdirectory=packages%2Fmlopt-orchestrator&tag=v0.1.14" },
+    { name = "mlopt-core", git = "https://github.com/handl-lang/eqsat.git?subdirectory=packages%2Fmlopt-core&tag=v0.1.15" },
+    { name = "mlopt-orchestrator", git = "https://github.com/handl-lang/eqsat.git?subdirectory=packages%2Fmlopt-orchestrator&tag=v0.1.15" },
     { name = "numpy", marker = "extra == 'kokoro'" },
     { name = "torch" },
     { name = "transformers", marker = "extra == 'hf'" },
@@ -1951,12 +1946,38 @@ dev = [
 [[package]]
 name = "mlopt-core"
 version = "0.1.0.dev0"
-source = { git = "https://github.com/handl-lang/eqsat.git?subdirectory=packages%2Fmlopt-core&tag=v0.1.14#bc5a8044b4a8fc687f2a0a97879fc55406b26039" }
+source = { git = "https://github.com/handl-lang/eqsat.git?subdirectory=packages%2Fmlopt-core&tag=v0.1.15#e34d7ca6364dcb50d1fae5d38ab66bc49c2c67f6" }
 
 [[package]]
 name = "mlopt-dtypes"
 version = "0.1.0.dev0"
-source = { git = "https://github.com/handl-lang/eqsat.git?subdirectory=packages%2Fmlopt-dtypes&tag=v0.1.14#bc5a8044b4a8fc687f2a0a97879fc55406b26039" }
+source = { git = "https://github.com/handl-lang/eqsat.git?subdirectory=packages%2Fmlopt-dtypes&tag=v0.1.15#e34d7ca6364dcb50d1fae5d38ab66bc49c2c67f6" }
+
+[[package]]
+name = "mlopt-kit"
+version = "0.1.0"
+source = { editable = "packages/mlopt-kit" }
+dependencies = [
+    { name = "mlopt-core" },
+    { name = "mlopt-dtypes" },
+    { name = "numpy" },
+    { name = "onnx" },
+]
+
+[package.optional-dependencies]
+onnxruntime = [
+    { name = "onnxruntime" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "mlopt-core", git = "https://github.com/handl-lang/eqsat.git?subdirectory=packages%2Fmlopt-core&tag=v0.1.15" },
+    { name = "mlopt-dtypes", git = "https://github.com/handl-lang/eqsat.git?subdirectory=packages%2Fmlopt-dtypes&tag=v0.1.15" },
+    { name = "numpy", specifier = ">=1.24" },
+    { name = "onnx", specifier = ">=1.16" },
+    { name = "onnxruntime", marker = "extra == 'onnxruntime'", specifier = ">=1.17" },
+]
+provides-extras = ["onnxruntime"]
 
 [[package]]
 name = "mlopt-meta"
@@ -1970,11 +1991,11 @@ dependencies = [
     { name = "kit-cuda" },
     { name = "kit-discovery" },
     { name = "kit-host-tensor" },
-    { name = "kit-onnx" },
     { name = "kit-torch" },
     { name = "mlopt" },
     { name = "mlopt-core" },
     { name = "mlopt-dtypes" },
+    { name = "mlopt-kit", extra = ["onnxruntime"] },
     { name = "mlopt-orchestrator" },
     { name = "numpy" },
     { name = "torch" },
@@ -2062,13 +2083,13 @@ requires-dist = [
     { name = "kit-cuda", git = "https://github.com/handl-lang/kit-cuda.git?tag=v0.1.9" },
     { name = "kit-discovery", git = "https://github.com/handl-lang/mlopt-discovery.git?tag=v0.1.11" },
     { name = "kit-host-tensor", git = "https://github.com/handl-lang/kit-host-tensor.git?tag=v0.1.6" },
-    { name = "kit-onnx", git = "https://github.com/handl-lang/kit-onnx.git?tag=v0.1.6" },
     { name = "kit-torch", git = "https://github.com/handl-lang/mlopt-torch.git?tag=v0.1.8" },
     { name = "loguru", marker = "extra == 'kokoro'" },
     { name = "mlopt", editable = "packages/mlopt" },
-    { name = "mlopt-core", git = "https://github.com/handl-lang/eqsat.git?subdirectory=packages%2Fmlopt-core&tag=v0.1.14" },
-    { name = "mlopt-dtypes", git = "https://github.com/handl-lang/eqsat.git?subdirectory=packages%2Fmlopt-dtypes&tag=v0.1.14" },
-    { name = "mlopt-orchestrator", git = "https://github.com/handl-lang/eqsat.git?subdirectory=packages%2Fmlopt-orchestrator&tag=v0.1.14" },
+    { name = "mlopt-core", git = "https://github.com/handl-lang/eqsat.git?subdirectory=packages%2Fmlopt-core&tag=v0.1.15" },
+    { name = "mlopt-dtypes", git = "https://github.com/handl-lang/eqsat.git?subdirectory=packages%2Fmlopt-dtypes&tag=v0.1.15" },
+    { name = "mlopt-kit", extras = ["onnxruntime"], editable = "packages/mlopt-kit" },
+    { name = "mlopt-orchestrator", git = "https://github.com/handl-lang/eqsat.git?subdirectory=packages%2Fmlopt-orchestrator&tag=v0.1.15" },
     { name = "mutmut", marker = "extra == 'dev'", specifier = ">=3.8.0" },
     { name = "numpy", specifier = ">=1.24" },
     { name = "numpy", marker = "extra == 'kokoro'" },
@@ -2125,7 +2146,7 @@ oracle = [{ name = "egglog", marker = "python_full_version >= '3.12'", specifier
 [[package]]
 name = "mlopt-orchestrator"
 version = "0.1.0.dev0"
-source = { git = "https://github.com/handl-lang/eqsat.git?subdirectory=packages%2Fmlopt-orchestrator&tag=v0.1.14#bc5a8044b4a8fc687f2a0a97879fc55406b26039" }
+source = { git = "https://github.com/handl-lang/eqsat.git?subdirectory=packages%2Fmlopt-orchestrator&tag=v0.1.15#e34d7ca6364dcb50d1fae5d38ab66bc49c2c67f6" }
 dependencies = [
     { name = "mlopt-core" },
 ]

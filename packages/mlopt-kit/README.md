@@ -128,6 +128,31 @@ echo 'tensor.matmul(tensor.from_list([[1,2]]), tensor.from_list([[3],[4]]))' \
   | target/debug/hnl-run -
 ```
 
+## The Python surface — `mlopt_kit.onnx`
+
+T-075(b/c) dissolved `handl-lang/kit-onnx`: its remaining code — the
+ONNX *sink* direction of ADR 0006 — folded in here as the package's
+first Python half.  `python/mlopt_kit/onnx/` ships `OnnxSink`
+(IR → ONNX lowering through `mlopt_kit.onnx.opmap.ONNX_BINDINGS`),
+`OnnxExecutor` (the lowered artifact run through `onnxruntime`), the
+`arrays` dtype policy, the `report`/`verify_module` equivalence gate,
+and `register()` seating `"onnx"` sink-only on
+`mlopt_core.backends.DEFAULT_REGISTRY`.
+
+`pyproject.toml` makes this directory a uv workspace member
+(distribution `mlopt-kit`, import `mlopt_kit`); the Rust crate is
+untouched.  `onnx`/`numpy`/`mlopt-core`/`mlopt-dtypes` are required
+deps; **`onnxruntime` is the optional `onnxruntime` extra**, imported
+lazily inside `OnnxExecutor.__init__` — importing, lowering, or
+`save()`-ing an artifact never requires it.  The lift direction is
+not here (and never was post-retirement): ONNX → IR is the Rust
+`source-onnx` lifter.
+
+```sh
+uv sync                      # at the research-mlopt root (workspace)
+.venv/bin/python -c "from mlopt_kit.onnx import OnnxSink"
+```
+
 ## Build & test
 
 ```sh

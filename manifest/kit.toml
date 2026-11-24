@@ -114,7 +114,6 @@ packages = [
     "kit-torch",
     "kit-discovery",
     "mlopt-orchestrator",
-    "kit-onnx",
 ]
 role = "the discovery + admission machinery — lift (TorchSource: torch IR → mlopt calculus), laws-as-data minting, the admission gauntlet, deliver. Composed at the Python env level (uv/pip git deps), not vendored here."
 

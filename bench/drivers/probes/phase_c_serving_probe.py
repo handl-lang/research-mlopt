@@ -105,8 +105,8 @@ def artifact_paths(workdir: Path) -> dict:
     # -- ONNX via OnnxSink (the alternative-pipeline route) ------------
     def _onnx():
         import onnxruntime as ort
-        from kit_onnx import OnnxSink
-        from kit_onnx.executor import OnnxExecutor
+        from mlopt_kit.onnx import OnnxSink
+        from mlopt_kit.onnx.executor import OnnxExecutor
         from mlopt_orchestrator import Optimizer
         from kit_torch.backend import TorchSource
 

@@ -1,9 +1,9 @@
 """ONNX codec-table drift guards — ADR-0178 WP0a.
 
-``kit_onnx.opmap`` (IR → ONNX, ~169 entries) is the guarded codec
+``mlopt_kit.onnx.opmap`` (IR → ONNX, ~169 entries) is the guarded codec
 table (``host/project/reports/
 p3_codec_consolidation_spike.md`` §1b).  The other direction —
-``kit_onnx.liftmap`` (ONNX → IR) — was retired when the Python
+``mlopt_kit.onnx.liftmap`` (ONNX → IR) — was retired when the Python
 lifter proved at parity with the Rust ``source-onnx`` lifter, which
 is now the single lift table.  This file guards the sink table the
 way
@@ -466,7 +466,7 @@ def _declarative_specs() -> dict[
     → 2; ``_REDUCERS`` → 1 plus a ``dim`` variant exercising the
     axes-as-input spelling; ``_CASTS`` → 1.
     """
-    from kit_onnx.opmap import (
+    from mlopt_kit.onnx.opmap import (
         _BINARY,
         _CASTS,
         _COMPARISON,
@@ -519,8 +519,8 @@ def _emitted_nodes(name: str) -> list[tuple[str, int]]:
     ``getitem`` is exercised against a ``max`` producer emitted in
     the same builder first — the only spelling it lowers.
     """
-    from kit_onnx.lower import GraphBuilder
-    from kit_onnx.opmap import ONNX_BINDINGS
+    from mlopt_kit.onnx.lower import GraphBuilder
+    from mlopt_kit.onnx.opmap import ONNX_BINDINGS
 
     if name in _PROBE_ARGS:
         args, attr_variants = _PROBE_ARGS[name], _PROBE_ATTRS[name]
@@ -552,13 +552,13 @@ def _emitted_nodes(name: str) -> list[tuple[str, int]]:
 class TestOnnxBindingsTable:
     def test_covered_op_set_is_pinned(self) -> None:
         """``supported_ops`` is exactly this set — additions are loud."""
-        from kit_onnx.opmap import ONNX_BINDINGS
+        from mlopt_kit.onnx.opmap import ONNX_BINDINGS
 
         assert frozenset(ONNX_BINDINGS) == _ONNX_BINDINGS_OPS
 
     def test_probe_table_covers_every_binding(self) -> None:
         """Every binding has a probe spec (or a named exception)."""
-        from kit_onnx.opmap import (
+        from mlopt_kit.onnx.opmap import (
             _BINARY,
             _CASTS,
             _COMPARISON,
@@ -576,7 +576,7 @@ class TestOnnxBindingsTable:
             | set(_CASTS)
         )
         probed = declared | set(_PROBE_ARGS) | _NEVER_NODE_EMITS
-        from kit_onnx.opmap import ONNX_BINDINGS
+        from mlopt_kit.onnx.opmap import ONNX_BINDINGS
 
         assert set(ONNX_BINDINGS) == probed, (
             "ONNX_BINDINGS gained/lost ops without a probe spec: "
@@ -585,7 +585,7 @@ class TestOnnxBindingsTable:
 
     def test_every_key_is_a_real_ir_op(self) -> None:
         """Forward guard — each claimed IR op exists in the vocabulary."""
-        from kit_onnx.opmap import ONNX_BINDINGS
+        from mlopt_kit.onnx.opmap import ONNX_BINDINGS
 
         oracle = _ir_op_oracle()
         missing = sorted(set(ONNX_BINDINGS) - oracle)
@@ -604,7 +604,7 @@ class TestOnnxBindingsTable:
         host-tensor surface cannot spell join ``_NON_HOST_OPS`` by
         name, so a typo'd or renamed op fails here.
         """
-        from kit_onnx.opmap import ONNX_BINDINGS
+        from mlopt_kit.onnx.opmap import ONNX_BINDINGS
 
         ops = host_ops()
         assert ops, "host_surface.json loaded empty — dep broke"
@@ -628,8 +628,8 @@ class TestOnnxBindingsTable:
         ``op_type`` fails ``defs.get_schema``, and an input count
         outside ``min_input``/``max_input`` fails the arity assert.
         """
-        from kit_onnx.errors import UnsupportedOnnxOpError
-        from kit_onnx.opmap import ONNX_BINDINGS
+        from mlopt_kit.onnx.errors import UnsupportedOnnxOpError
+        from mlopt_kit.onnx.opmap import ONNX_BINDINGS
 
         for name in sorted(ONNX_BINDINGS):
             if name in _NEVER_NODE_EMITS:
@@ -664,7 +664,7 @@ class TestOnnxBindingsTable:
 
 
 def _declarative_names() -> set[str]:
-    from kit_onnx.opmap import (
+    from mlopt_kit.onnx.opmap import (
         _BINARY,
         _CASTS,
         _COMPARISON,

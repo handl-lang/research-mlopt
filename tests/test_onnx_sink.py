@@ -2,7 +2,7 @@
 
 Two things are under test here, and the second is the experiment:
 
-1. that :class:`kit_onnx.OnnxSink` lowers mlopt IR to a runnable
+1. that :class:`mlopt_kit.onnx.OnnxSink` lowers mlopt IR to a runnable
    ONNX artifact whose numbers match the source program, and
 2. that it does so as a *port implementation* — the pipeline drives it
    through ``mlopt_core.ports`` exactly as it drives the torch sink,
@@ -15,7 +15,7 @@ against torch's own result.  Ops outside the mapping are exercised by
 never drop* rule.
 
 ``onnx``/``onnxruntime`` are declared dependencies of the
-``kit-onnx`` package; the module skips cleanly when they are
+``mlopt-kit`` package; the module skips cleanly when they are
 absent from the environment so the rest of the suite stays green.
 """
 
@@ -49,7 +49,7 @@ from mlopt_core.ports import (
     Sink,
     VerifyResult,
 )
-from kit_onnx import (
+from mlopt_kit.onnx import (
     ONNX_BINDINGS,
     OnnxExecutor,
     OnnxLoweringError,
@@ -185,12 +185,12 @@ sys.meta_path.insert(0, _Blocker())
 import importlib
 import pkgutil
 
-import kit_onnx
+import mlopt_kit.onnx
 
 # Every submodule of the ONNX backend must import with torch blocked —
 # the boundary claim is that it depends on mlopt_core alone.
 for _info in pkgutil.walk_packages(
-    kit_onnx.__path__, "kit_onnx."
+    mlopt_kit.onnx.__path__, "mlopt_kit.onnx."
 ):
     importlib.import_module(_info.name)
 
@@ -200,13 +200,13 @@ assert "kit_carriers" not in sys.modules
 assert "mlopt_orchestrator" not in sys.modules
 
 from mlopt_core.ports import Sink
-assert isinstance(kit_onnx.OnnxSink(), Sink)
+assert isinstance(mlopt_kit.onnx.OnnxSink(), Sink)
 print("onnx-imported-torch-free")
 """
 
 
 def test_the_onnx_backend_imports_without_torch():
-    """``kit_onnx`` never pulls the torch backend family.
+    """``mlopt_kit.onnx`` never pulls the torch backend family.
 
     This is the port-boundary claim in its strongest form: the second
     backend is a *peer* of the torch one, reachable through
@@ -252,7 +252,7 @@ def test_lowered_model_is_a_checked_onnx_artifact():
     model = executor.model
     assert model.ir_version == OnnxSink().ir_version
     assert model.opset_import[0].version == 18
-    assert model.producer_name == "kit-onnx"
+    assert model.producer_name == "mlopt-kit"
     onnx.checker.check_model(model)
 
 

@@ -23,8 +23,9 @@ optimization machinery lives here; it lives in the sibling repos:
   split from graphopt in P3 Step D-1b)
 - `handl-lang/kit-cuda` — the CUDA-graph runner (`kit_cuda`, split
   from graphopt in P3 Step D-1c)
-- `handl-lang/kit-onnx` — the ONNX backend (`kit_onnx`, split from
-  graphopt in P3 Step D-1; not a direct dep of this repo)
+- `packages/mlopt-kit` (this repo) — the ONNX backend folded in at
+  T-075 b/c (`mlopt_kit.onnx`, ex-`kit_onnx`; the kit-onnx repo is
+  deleted; not a direct dep of this repo)
 - `handl-lang/kernelopt` — codegen domain
 - `handl-lang/gamekit` / `discoverykit` — game + mining layers
 
