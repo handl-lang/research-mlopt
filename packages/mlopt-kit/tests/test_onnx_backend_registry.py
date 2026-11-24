@@ -5,14 +5,14 @@ from __future__ import annotations
 import subprocess
 import sys
 
+import mlopt_kit.onnx
 import pytest
 from mlopt_core import backends
 from mlopt_core.ports import Sink
 
-import mlopt_kit.onnx
-
 
 def test_register_seats_onnx_backend():
+    """``register()`` seats a Sink-only backend on the core registry."""
     snap = {
         name: reg for name, reg in backends.DEFAULT_REGISTRY.items()
     }
@@ -40,6 +40,7 @@ def test_register_seats_onnx_backend():
 
 
 def test_import_does_not_register():
+    """Importing ``mlopt_kit.onnx`` alone seats nothing on the registry."""
     # Fresh interpreter semantics: importing mlopt_kit.onnx must not seat
     # anything — the register() call is explicit (kernelopt pattern).
     out = subprocess.run(

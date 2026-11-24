@@ -14,13 +14,22 @@ from __future__ import annotations
 
 import numpy as np
 import pytest
-pytestmark = pytest.mark.e2e  # boundary-purpose file: crosses an external engine boundary
+
+# boundary-purpose file: crosses an external engine boundary
+pytestmark = pytest.mark.e2e
 
 pytest.importorskip("onnx")
 pytest.importorskip("onnxruntime")
 
-from mlopt_core.ir import IR, Const, Op, Param, TensorType, Var
-from mlopt_kit.onnx import (
+from mlopt_core.ir import (  # noqa: E402
+    IR,
+    Const,
+    Op,
+    Param,
+    TensorType,
+    Var,
+)
+from mlopt_kit.onnx import (  # noqa: E402
     OnnxExecutor,
     OnnxLoweringError,
     UnsupportedOnnxOpError,
@@ -38,7 +47,7 @@ DT = np.float32
 
 
 def _var(name="x", shape=(4, 6)):
-    """A typed input leaf."""
+    """Return a typed input leaf."""
     return Var(name, TensorType(tuple(shape)))
 
 
@@ -227,6 +236,7 @@ def test_movedim_refuses_mismatched_axes():
 
 
 def test_reshape_without_a_shape_is_refused():
+    """``reshape`` with no shape operand or attr is refused."""
     ir = _one_op("reshape")
     with pytest.raises(UnsupportedOnnxOpError, match="shape"):
         lower_ir(ir)
