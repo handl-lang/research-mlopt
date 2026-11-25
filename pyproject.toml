@@ -149,24 +149,24 @@ mlopt-orchestrator = { git = "https://github.com/handl-lang/eqsat.git", subdirec
 gamekit = { git = "https://github.com/handl-lang/gamekit.git", subdirectory = "packages/gamekit", tag = "v0.1.16" }
 benchkit = { git = "https://github.com/handl-lang/gamekit.git", subdirectory = "packages/benchkit", tag = "v0.1.16" }
 # discoverykit (plan 0034 phase 1): the domain-free mining core
-# extracted from the discovery engine (mlopt-discovery, now
-# handl-lang/kit-discovery in P3 Step D-1d) — pinned git dep below.
+# extracted from the discovery engine (kit-discovery,
+# split to handl-lang/kit-discovery in P3 Step D-1d) — pinned git dep below.
 discoverykit = { git = "https://github.com/handl-lang/discoverykit.git", subdirectory = "packages/discoverykit", tag = "v0.1.31" }
 # kit-torch (P3 Step D-1e): the PyTorch adapters/backend, split to
 # handl-lang/kit-torch — pinned git dep at the v0.1.4 tag.
-kit-torch = { git = "https://github.com/handl-lang/mlopt-torch.git", tag = "v0.1.8" }
+kit-torch = { git = "https://github.com/handl-lang/kit-torch.git", tag = "v0.1.8" }
 # kit-carriers (P3 Step D-1b): the semantic carriers, split to
-# handl-lang/mlopt-carriers — pinned git dep at the v0.1.8 tag.
+# handl-lang/kit-carriers — pinned git dep at the v0.1.8 tag.
 # NOTE: kit-discovery v0.1.11's manifest still sources the pre-rename
-# ``kit-carriers.git`` URL (GitHub 301 → mlopt-carriers); uv treats the
+# ``mlopt-carriers.git`` URL (GitHub 301 → kit-carriers); uv treats the
 # two spellings as conflicting sources, so the override below pins the
 # canonical URL workspace-wide until a kit-discovery tag carries the
-# repin (mlopt-discovery@2dad41f).
-kit-carriers = { git = "https://github.com/handl-lang/mlopt-carriers.git", tag = "v0.1.8" }
+# repin (kit-discovery@2dad41f).
+kit-carriers = { git = "https://github.com/handl-lang/kit-carriers.git", tag = "v0.1.8" }
 # kit-cuda (P3 Step D-1c): the CUDA-graph delivery runner, split to
 # handl-lang/kit-cuda — pinned git dep at the v0.1.5 tag.
 kit-cuda = { git = "https://github.com/handl-lang/kit-cuda.git", tag = "v0.1.9" }
-kit-discovery = { git = "https://github.com/handl-lang/mlopt-discovery.git", tag = "v0.1.11" }
+kit-discovery = { git = "https://github.com/handl-lang/kit-discovery.git", tag = "v0.1.11" }
 # mlopt-kit (T-075 b/c): the kit-onnx dissolution — the ONNX backend
 # now lives in packages/mlopt-kit's Python surface (mlopt_kit.onnx);
 # the [onnxruntime] extra is taken on the dependency line above.
@@ -186,7 +186,7 @@ mlopt = { workspace = true }
 # (post-rename) URL for every requirement named ``kit-carriers``,
 # including kit-discovery v0.1.11's transitive source.
 override-dependencies = [
-    "kit-carriers @ git+https://github.com/handl-lang/mlopt-carriers.git@v0.1.8",
+    "kit-carriers @ git+https://github.com/handl-lang/kit-carriers.git@v0.1.8",
     # eqsat v0.1.15 carries the sink-only ``source=None`` backend
     # registration ``mlopt_kit.onnx.register()`` needs (ex-kit-onnx
     # pinned it too); transitive manifests still say v0.1.14.
