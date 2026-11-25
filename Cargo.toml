@@ -40,7 +40,7 @@ exclude = [
 # 2. **`[patch]` tables.** On a machine without the env file, point each
 #    git source at a local checkout by uncommenting and repointing tables
 #    like the one below (the shape every handl-lang repo itself uses —
-#    see e.g. `exec-tensor/Cargo.toml`):
+#    see e.g. `lib-tensor-native/Cargo.toml`):
 #
 # [patch."https://github.com/handl-lang/kernel"]
 # handl-language = { path = "/path/to/kernel/crates/handl-language" }
@@ -70,8 +70,8 @@ exclude = [
 # # Add entries on demand — cargo names the missing package in the
 # # error.
 #
-# [patch."https://github.com/handl-lang/exec-tensor"]
-# handl-host-tensor = { path = "/path/to/exec-tensor" }
+# [patch."https://github.com/handl-lang/lib-tensor-native"]
+# handl-host-tensor = { path = "/path/to/lib-tensor-native" }
 #
 # [patch."https://github.com/handl-lang/lib-ops"]
 # handl-lib-ops = { path = "/path/to/lib-ops" }
@@ -79,5 +79,5 @@ exclude = [
 # handl-lib-dedent = { path = "/path/to/lib-dedent" }
 # ---------------------------------------------------------------------------
 
-[patch."https://github.com/handl-lang/exec-tensor"]
-handl-host-tensor = { path = "../exec-tensor" }
+[patch."https://github.com/handl-lang/lib-tensor-native"]
+handl-host-tensor = { path = "../lib-tensor-native" }

@@ -5,7 +5,7 @@ Closes the codec-fragmentation debt flagged by
 4): the ~203-entry hand-written IR-op → ``tensor.*`` builder table had
 no guard against the canonical generated surface
 (the vendored ``mlopt/tensor_surface.py`` ``host_surface.json``,
-239 ops — a pinned copy of ``handl-lang/exec-tensor``'s artifact).
+239 ops — a pinned copy of ``handl-lang/lib-tensor-native``'s artifact).
 These tests pin:
 
 * **forward** — every ``_OPS`` builder, executed on a canonical probe

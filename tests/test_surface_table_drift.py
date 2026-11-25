@@ -427,7 +427,7 @@ class TestHostBindingsSurface:
     """``HOST_BINDINGS`` keys must be real ``tensor.*`` ops.
 
     Ported from kit-host-tensor's ``test_host_surface.py`` when the
-    surface artifact moved to exec-tensor + the mlopt package's
+    surface artifact moved to lib-tensor-native + the mlopt package's
     vendored copy (P-010 dissolution) — the check needs both tables,
     and this file already imports both.
     """

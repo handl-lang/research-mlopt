@@ -30,9 +30,9 @@
 # the sibling-checkout convention.
 
 [dependencies]
-host-tensor = { git = "https://github.com/handl-lang/exec-tensor", branch = "main", subdir = "src" }
+host-tensor = { git = "https://github.com/handl-lang/lib-tensor-native", branch = "main", subdir = "src" }
 mlopt-kit  = { git = "https://github.com/handl-lang/mlopt", branch = "main", subdir = "packages/mlopt-kit" }
 
 [patch]
-host-tensor = "../../../exec-tensor/src"
+host-tensor = "../../../lib-tensor-native/src"
 mlopt-kit  = "../mlopt-kit"

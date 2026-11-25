@@ -32,7 +32,7 @@
 # `sed -i s|../research-mlopt|$PWD|` self-patch rewrite is not ported:
 # no manifest in this repo spells `path = "../research-mlopt"`, so
 # the second-spelling hazard cannot arise (same call as
-# exec-tensor/workflows/gate.yaml).
+# lib-tensor-native/workflows/gate.yaml).
 #
 # Verdict: .ci-result.json `.conclusion` == "success" — gate.report
 # requires one record per family (python + rust) and zero rc != 0.

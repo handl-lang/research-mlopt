@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Refresh the vendored ``host_surface.json`` from exec-tensor.
+"""Refresh the vendored ``host_surface.json`` from lib-tensor-native.
 
 The canonical ``tensor.*`` surface artifact moved to
-``handl-lang/exec-tensor`` in the P-010 dissolution
+``handl-lang/lib-tensor-native`` in the P-010 dissolution
 (``tools/dump_host_surface.py`` → repo-root ``host_surface.json``).
 This repo vendors a pinned copy at
 ``packages/mlopt/src/mlopt/host_surface.json`` for ``mlopt.emit``'s
@@ -13,8 +13,8 @@ Usage::
 
     .venv/bin/python scripts/dump_host_surface.py [--check]
 
-``EXEC_TENSOR_DIR`` overrides the sibling-checkout default
-(``../exec-tensor``).  ``--check`` exits non-zero when the vendored
+``LIB_TENSOR_NATIVE_DIR`` overrides the sibling-checkout default
+(``../lib-tensor-native``).  ``--check`` exits non-zero when the vendored
 copy differs — the drift gate.
 """
 
@@ -32,15 +32,15 @@ VENDORED = (
 )
 
 
-def _exec_tensor_dir() -> Path:
-    """Locate the exec-tensor checkout."""
+def _lib_tensor_native_dir() -> Path:
+    """Locate the lib-tensor-native checkout."""
     cand = Path(
-        os.environ.get("EXEC_TENSOR_DIR", REPO.parent / "exec-tensor")
+        os.environ.get("LIB_TENSOR_NATIVE_DIR", REPO.parent / "lib-tensor-native")
     )
     if not (cand / "tools" / "dump_host_surface.py").is_file():
         raise SystemExit(
-            f"exec-tensor checkout not found at {cand} — set "
-            "EXEC_TENSOR_DIR"
+            f"lib-tensor-native checkout not found at {cand} — set "
+            "LIB_TENSOR_NATIVE_DIR"
         )
     return cand
 
@@ -64,7 +64,7 @@ def _fresh_surface(ht: Path) -> bytes:
         )
         if regen.returncode != 0:
             raise SystemExit(
-                f"exec-tensor surface regen failed: {regen.stderr.strip()}"
+                f"lib-tensor-native surface regen failed: {regen.stderr.strip()}"
             )
     return out.read_bytes()
 
@@ -79,7 +79,7 @@ def main() -> int:
     )
     args = ap.parse_args()
 
-    ht = _exec_tensor_dir()
+    ht = _lib_tensor_native_dir()
     fresh = _fresh_surface(ht)
     current = VENDORED.read_bytes() if VENDORED.is_file() else b""
 
