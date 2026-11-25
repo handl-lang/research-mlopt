@@ -50,7 +50,7 @@ hnl-tool-parse-pratt = { git = "https://github.com/handl-lang/tool-parse-pratt",
 hnl-exec-tree-walk = { git = "https://github.com/handl-lang/exec-tree-walk", branch = "main" }
 
 # host-tensor — the `tensor.*` host-function surface (18 ops)
-handl-host-tensor = { git = "https://github.com/handl-lang/exec-tensor", branch = "main" }
+handl-host-tensor = { git = "https://github.com/handl-lang/lib-tensor-native", branch = "main" }
 
 # ---------------------------------------------------------------------------
 # Local-override story (the org's `[patch]` dev-link convention — the
