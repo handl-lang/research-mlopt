@@ -1,10 +1,10 @@
-"""``onnx-rust`` source adapter tests — the source-onnx Rust lifter.
+"""``onnx-rust`` source adapter tests — the tool-codegen-onnx Rust lifter.
 
 Covers ref routing, binary resolution + honest declines, the
 safetensors → param-values binding, Param-name sanitizing for the
 torch sink, the ``OnnxRustSource`` port feeding ``optimize_model``,
 and the lifter's named refusals surfacing verbatim.  Tests that need
-the ``lift`` binary or the ``source-onnx`` fixture checkout skip
+the ``lift`` binary or the ``tool-codegen-onnx`` fixture checkout skip
 when either is absent.
 """
 
@@ -27,13 +27,13 @@ except ImportError:  # pragma: no cover — torch is a hard dep
 
 pytestmark = pytest.mark.skipif(not _HAS_TORCH, reason="torch required")
 
-#: This repo's sibling ``source-onnx`` checkout (the adapter's own
+#: This repo's sibling ``tool-codegen-onnx`` checkout (the adapter's own
 #: default guess), plus the ``SOURCE_ONNX_REPO`` env override.
-_SIBLING_FIXTURES = Path(__file__).resolve().parents[4] / "source-onnx" / "tests" / "fixtures"
+_SIBLING_FIXTURES = Path(__file__).resolve().parents[4] / "tool-codegen-onnx" / "tests" / "fixtures"
 
 
 def _fixture(name: str) -> Path | None:
-    """A committed source-onnx fixture, env-overridable, skip when absent."""
+    """A committed tool-codegen-onnx fixture, env-overridable, skip when absent."""
     import os
 
     env = os.environ.get("SOURCE_ONNX_REPO")
@@ -58,7 +58,7 @@ def adapter():
 def tiny_onnx():
     p = _fixture("add_relu.onnx")
     if p is None or _find_binary() is None:
-        pytest.skip("source-onnx lift binary or add_relu.onnx fixture absent")
+        pytest.skip("tool-codegen-onnx lift binary or add_relu.onnx fixture absent")
     return p
 
 

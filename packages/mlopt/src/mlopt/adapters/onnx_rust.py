@@ -1,7 +1,8 @@
-"""``.onnx`` source adapter — the ``source-onnx`` Rust lifter as frontend.
+"""``.onnx`` source adapter — the ``tool-codegen-onnx`` Rust lifter.
 
 ``mlopt optimize model.onnx`` / ``mlopt optimize onnx-rust:model.onnx``
-runs the Rust ONNX lifter (``handl-lang/source-onnx``, ADR-0176) as a
+runs the Rust ONNX lifter (``handl-lang/tool-codegen-onnx``'s
+``source_onnx`` module, ADR-0176; merged from ``source-onnx``) as a
 subprocess — the same JSON-in/JSON-out bridge the differential harness
 (``graphopt:bench/drivers/audit/onnx_lifter_differential.py``) uses —
 then decodes the emitted Term-JSON through
@@ -16,12 +17,12 @@ module runs; nothing downstream knows the frontend was ONNX.
 Honest bounds, stated up front:
 
 * **The lifter is a subprocess, not a library.**  mlopt is Python;
-  ``source-onnx`` is a Rust crate.  The adapter resolves the ``lift``
+  ``tool-codegen-onnx`` is a Rust crate.  The adapter resolves the ``lift``
   example binary (``--adapter-opt lift_bin=<path>``, the
   ``SOURCE_ONNX_LIFT`` env var, the sibling checkout's
   ``target/{release,debug}/examples/lift``, the shared cargo target
   dir) and builds it with ``cargo build --example lift`` when a
-  ``source-onnx`` checkout is present but unbuilt.  No binary and no
+  ``tool-codegen-onnx`` checkout is present but unbuilt.  No binary and no
   checkout → a named decline with the build instructions, never a
   silent fallback to the retired Python ``kit_onnx`` lifter
   (parity with this crate was proven and the oracle removed — a
@@ -81,11 +82,17 @@ _MLOPT_ROOT = Path(__file__).resolve().parents[5]
 
 
 def _source_onnx_repo() -> Path | None:
-    """The ``source-onnx`` checkout: env override, then the sibling dir."""
+    """The ``tool-codegen-onnx`` checkout: env override, sibling dir.
+
+    The ``source-onnx`` lifter merged into ``tool-codegen-onnx`` as
+    the ``source_onnx`` module (T-075d); the ``lift``/``arch`` example
+    binaries and ``data/architectures/`` live there now.  The
+    ``SOURCE_ONNX_*`` env names are kept for compatibility.
+    """
     env = os.environ.get("SOURCE_ONNX_REPO")
     if env:
         return Path(env)
-    sibling = _MLOPT_ROOT.parent / "source-onnx"
+    sibling = _MLOPT_ROOT.parent / "tool-codegen-onnx"
     return sibling if sibling.is_dir() else None
 
 
@@ -153,9 +160,9 @@ def _ensure_binary(lift_bin: Any = None) -> Path:
             f"(rc={proc.returncode}): {tail[-1] if tail else 'no output'}"
         )
     raise ValueError(
-        "onnx-rust: the source-onnx `lift` binary was not found — set "
+        "onnx-rust: the tool-codegen-onnx `lift` binary was not found — set "
         "--adapter-opt lift_bin=<path> or SOURCE_ONNX_LIFT, or clone "
-        "handl-lang/source-onnx next to the mlopt checkout (or point "
+        "handl-lang/tool-codegen-onnx next to the mlopt checkout (or point "
         "SOURCE_ONNX_REPO at it) and build with "
         "`cargo build --example lift`"
     )
@@ -724,7 +731,7 @@ class _OnnxRustAdapter:
 
     name = "onnx-rust"
     description = (
-        ".onnx ONNX source — source-onnx Rust lifter (subprocess, "
+        ".onnx ONNX source — tool-codegen-onnx Rust lifter (subprocess, "
         "Term-JSON), safetensors weights, seeded synthetic "
         "input probes"
     )

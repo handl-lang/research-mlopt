@@ -93,7 +93,7 @@ _REPO = Path(__file__).resolve().parents[3]
 _SOURCE_ONNX = Path(
     os.environ.get(
         "SOURCE_ONNX_REPO",
-        Path.home() / "GitHub" / "handl-lang" / "source-onnx",
+        Path.home() / "GitHub" / "handl-lang" / "tool-codegen-onnx",
     )
 )
 

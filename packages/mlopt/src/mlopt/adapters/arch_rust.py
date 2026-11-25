@@ -2,7 +2,7 @@
 
 ``mlopt optimize arch:whisper-tiny-encoder`` (or
 ``arch:<path/to/spec.json>`` / a ``*.arch.json`` path) runs the
-``source-onnx`` Rust assembler (``handl-lang/source-onnx``
+``tool-codegen-onnx`` Rust assembler (``handl-lang/tool-codegen-onnx``
 ``examples/arch.rs``, ADR-0176) as a subprocess — the same
 JSON-in/JSON-out bridge ``adapters/onnx_rust.py`` uses — then decodes
 the emitted Term-JSON through
@@ -18,7 +18,7 @@ Honest bounds, stated up front:
   (``--adapter-opt arch_bin=<path>``, the ``SOURCE_ONNX_ARCH`` env
   var, the sibling checkout's ``target/{release,debug}/examples/arch``,
   the shared cargo target dir) and builds it with
-  ``cargo build --example arch`` when a ``source-onnx`` checkout is
+  ``cargo build --example arch`` when a ``tool-codegen-onnx`` checkout is
   present but unbuilt.  No binary and no checkout → a named decline.
 * **Weights are REAL and required — resolved Rust-side.**  The
   ``arch`` CLI owns checkpoint resolution: ``--adapter-opt
@@ -125,9 +125,9 @@ def _ensure_arch_binary(arch_bin: Any = None) -> Path:
             f"(rc={proc.returncode}): {tail[-1] if tail else 'no output'}"
         )
     raise ValueError(
-        "arch: the source-onnx `arch` binary was not found — set "
+        "arch: the tool-codegen-onnx `arch` binary was not found — set "
         "--adapter-opt arch_bin=<path> or SOURCE_ONNX_ARCH, or clone "
-        "handl-lang/source-onnx next to the mlopt checkout (or point "
+        "handl-lang/tool-codegen-onnx next to the mlopt checkout (or point "
         "SOURCE_ONNX_REPO at it) and build with "
         "`cargo build --example arch`"
     )
@@ -165,7 +165,7 @@ def _resolve_spec_path(ref_payload: str) -> tuple[Path, Path | None]:
     raise ValueError(
         f"arch: cannot resolve arch spec {ref_payload!r} — pass a "
         "path to an mlopt.arch/v1 JSON file, or a spec name shipped in "
-        "source-onnx's data/architectures/ (clone handl-lang/source-onnx "
+        "tool-codegen-onnx's data/architectures/ (clone handl-lang/tool-codegen-onnx "
         "next to the mlopt checkout or set SOURCE_ONNX_REPO)"
     )
 
@@ -582,7 +582,7 @@ class _ArchRustAdapter:
     #: ``onnx-rust:`` precedent: prefix == adapter name).
     name = "arch"
     description = (
-        "mlopt.arch/v1 architecture spec — source-onnx Rust assembler "
+        "mlopt.arch/v1 architecture spec — tool-codegen-onnx Rust assembler "
         "(subprocess, Term-JSON), real safetensors weights "
         "(weights= opt or HF cache), seeded synthetic input probes"
     )

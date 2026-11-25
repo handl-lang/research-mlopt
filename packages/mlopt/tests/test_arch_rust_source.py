@@ -1,4 +1,4 @@
-"""``arch`` source adapter tests — the source-onnx ``mlopt.arch/v1`` assembler.
+"""``arch`` source adapter tests — the tool-codegen-onnx ``mlopt.arch/v1`` assembler.
 
 Covers ref routing, spec resolution, binary/weights honesty, the
 safetensors manifest → param-values binding (``source``/``transform``),
@@ -27,7 +27,7 @@ except ImportError:  # pragma: no cover — torch is a hard dep
 
 pytestmark = pytest.mark.skipif(not _HAS_TORCH, reason="torch required")
 
-_SIBLING = Path(__file__).resolve().parents[4] / "source-onnx"
+_SIBLING = Path(__file__).resolve().parents[4] / "tool-codegen-onnx"
 _SPEC = _SIBLING / "data" / "architectures" / "whisper-tiny-encoder.json"
 
 
@@ -137,7 +137,7 @@ def test_unknown_family_verbatim(adapter, tmp_path) -> None:
     weights = _weights_path()
     if weights is None:
         pytest.skip("whisper-tiny weights absent")
-    # The assembler's refusal wording (source-onnx 8c6dd79+): the
+    # The assembler's refusal wording (tool-codegen-onnx 8c6dd79+): the
     # family dispatch now reports the spec as uncombinable sections.
     with pytest.raises(ValueError, match='llama spec cannot combine "encoder"'):
         adapter.load(str(p), weights=str(weights))
