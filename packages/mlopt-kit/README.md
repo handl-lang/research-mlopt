@@ -146,7 +146,7 @@ deps; **`onnxruntime` is the optional `onnxruntime` extra**, imported
 lazily inside `OnnxExecutor.__init__` — importing, lowering, or
 `save()`-ing an artifact never requires it.  The lift direction is
 not here (and never was post-retirement): ONNX → IR is the Rust
-`source-onnx` lifter.
+`tool-codegen-onnx` `source_onnx` lifter.
 
 ```sh
 uv sync                      # at the research-mlopt root (workspace)

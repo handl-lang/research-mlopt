@@ -89,7 +89,7 @@ optimization machinery lives here; it lives in the sibling repos:
     (`synthetic=false` declines); shapeless `Var`s need
     `--adapter-opt leaves='{"x": [dims]}'`).  `onnx_rust.py` live
     (ADR-0176 — `.onnx` files and `onnx-rust:` refs lift through the
-    `source-onnx` Rust lifter's `lift` example binary, a subprocess
+    `tool-codegen-onnx` `source_onnx` lifter's `lift` example binary, a subprocess
     emitting hnl_codec Term-JSON + a safetensors payload the adapter
     decodes into the same `Source`-port seam; weights are real,
     inputs are seeded synthetic probes overridable via
@@ -99,7 +99,7 @@ optimization machinery lives here; it lives in the sibling repos:
     --example lift` fallback).  `arch_rust.py` live
     (ADR-0176 — `arch:` refs and `mlopt.arch/v1` spec paths
     (`*.arch.json`, or any `.json` sniffed for the format tag)
-    assemble through the `source-onnx` `arch` example binary: HF
+    assemble through the `tool-codegen-onnx` `source_onnx` `arch` example binary: HF
     safetensors → spec → Term with **no ONNX file**; spec names
     resolve under the checkout's `data/architectures/`; weights are
     real — `weights=<path>` or the spec's `checkpoint.{repo,file}`

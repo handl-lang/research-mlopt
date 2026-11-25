@@ -26,7 +26,7 @@ laws/executors — `kit-carriers`, **split to
 `mlopt-orchestrator` — the backend-neutral pipeline (eqsat);
 the ONNX backend — ADR 0006: `OnnxSink` lowers IR to
 a checked ONNX artifact, verified through onnxruntime (the ONNX→IR
-lift was retired after parity with the Rust `source-onnx` lifter was
+lift was retired after parity with the Rust `source_onnx` lifter (now `tool-codegen-onnx`'s `source_onnx` module) was
 proven — the backend is sink-only, `register()` seats `source=None`);
 **folded into `packages/mlopt-kit`'s Python surface at T-075 b/c**
 (was `handl-lang/kit-onnx`, import `kit_onnx`; now import
