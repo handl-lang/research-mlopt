@@ -21,7 +21,7 @@ def test_register_seats_onnx_backend():
         mlopt_kit.onnx.register()
         reg = backends.get_backend("onnx")
         # Sink-only: the lift direction lives in the Rust
-        # source-onnx crate, so the registration declares no source.
+        # tool-codegen-onnx source_onnx module, so the registration declares no source.
         assert reg.source is None
         with pytest.raises(backends.BackendPortsMissing):
             reg.source_instance()

@@ -4,7 +4,7 @@
 table (``host/project/reports/
 p3_codec_consolidation_spike.md`` §1b).  The other direction —
 ``mlopt_kit.onnx.liftmap`` (ONNX → IR) — was retired when the Python
-lifter proved at parity with the Rust ``source-onnx`` lifter, which
+lifter proved at parity with the Rust ``source_onnx`` lifter (merged into tool-codegen-onnx), which
 is now the single lift table.  This file guards the sink table the
 way
 ``test_surface_table_drift.py`` guards the hnl/modelproj/torch

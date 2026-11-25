@@ -6,7 +6,7 @@ lowered artifact — optimized programs leave for any ONNX runtime.
 
 The *lift* direction (ONNX graph -> IR) is no longer here: the
 Python ``OnnxSource``/``liftmap`` was proven at parity with the
-Rust lifter (``handl-lang/source-onnx``, surfaced to Python through
+Rust lifter (``handl-lang/tool-codegen-onnx``'s ``source_onnx`` module (merged from ``source-onnx``), surfaced to Python through
 ``mlopt.adapters.onnx_rust.OnnxRustSource``) and retired.  ONNX
 models still enter the optimizer untouched by torch — through the
 Rust producer, not this package.
@@ -78,7 +78,7 @@ def register() -> None:
     ``mlopt_kernel.play.register()``).  Registers ``"onnx"`` as a
     **sink-only** backend: ``OnnxSink`` is the ``"onnx"`` target, a
     lazy factory resolved on demand, and ``source=None`` — the
-    ONNX -> IR lift lives in the Rust ``source-onnx`` crate now, so
+    ONNX -> IR lift lives in the Rust ``source_onnx`` module now, so
     this package honestly declares no ``Source`` port.
     ``find_backends_by_ops`` capability queries work today;
     ``source_instance()``/``build_backend`` name the missing source.
@@ -89,6 +89,6 @@ def register() -> None:
         "onnx",
         source=None,
         targets={"onnx": OnnxSink},
-        notes="ONNX sink (ADR 0006); lift lives in source-onnx; "
+        notes="ONNX sink (ADR 0006); lift lives in tool-codegen-onnx source_onnx; "
         "composer/meter pending",
     )

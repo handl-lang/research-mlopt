@@ -39,7 +39,7 @@ no reimplementation:
   re-spells every term payload in the canonical
   ``mlopt_core.term_json`` Term-JSON envelope (``{"Op"/"Arr"/
   "Const"/"Opaque"}``) — the codec ``engine-eqsat`` and the
-  ``source-onnx`` lifter speak (``kit_discovery.hnl_codec`` is a
+  the ONNX lifter speak (``kit_discovery.hnl_codec`` is a
   re-export shim over the same codec); v≤2 payloads (the
   ``mlopt_core.ir.term_to_data`` spellings) are still decoded — the
   two envelopes are disjoint, so the reader dispatches on payload
@@ -129,7 +129,7 @@ STAGES = ("lift", "search", "verify", "deliver")
 #: v3: every term payload is spelled in the canonical
 #: ``mlopt_core.term_json`` Term-JSON envelope (ADR-0178 WP0b —
 #: ``{"Op"/"Arr"/"Const"/"Opaque"}``, the codec ``engine-eqsat`` and
-#: ``source-onnx`` already speak; emitted with ``leaf="arr"`` — a
+#: the ONNX lifter already speaks; emitted with ``leaf="arr"`` — a
 #: ``const-str`` leaf would misdecode as a scalar ``Const`` under
 #: pre-shim ``hnl_codec`` readers, so it must never appear here).
 #: v≤2 payloads (the
@@ -150,7 +150,7 @@ class _StageError(Exception):
 #  Emit side (v3): every term payload is ``mlopt_core.term_json``
 #  Term-JSON — the canonical kernel-Term envelope (``{"Op"/"Arr"/
 #  "Const"/"Opaque"}``, ``dag.program`` sharing under ``Opaque``),
-#  the codec ``engine-eqsat`` and the ``source-onnx`` lifter speak
+#  the codec ``engine-eqsat`` and the ONNX lifter speak
 #  (ADR-0178 WP0b; ``kit_discovery.hnl_codec`` re-exports it).  The
 #  leaf profile is pinned to ``"arr"`` — ``const-str`` leaves are an
 #  engine-wire profile that pre-shim ``hnl_codec`` readers misdecode
