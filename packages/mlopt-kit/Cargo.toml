@@ -2,6 +2,7 @@
 name = "mlopt-kit"
 version = "0.1.0"
 edition = "2024"
+rust-version = "1.85"
 description = "mlopt's handl composition seam — assembles a minimal handl runtime (canonical language + tree-walk eval) and composes the host-tensor op surface"
 license = "MIT"
 
