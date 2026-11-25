@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# bupha entry point (runner.kind = "script", cmd = "./ci.sh") — the
+# Local gate entry — workflows/gate.yaml is the bupha/peregrin gate
+# (its legs are ported from this script); run by hand it covers the
 # whole per-push gate: Python static gates (scripts/gates.sh `static`
 # lane) + the Rust arm (cargo build + test of the standalone
 # experiments crate + the certification leg, no timing). The Python
