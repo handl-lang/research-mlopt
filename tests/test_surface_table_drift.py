@@ -38,7 +38,6 @@ from __future__ import annotations
 import re
 from typing import Any
 
-import pytest
 from mlopt.tensor_surface import host_ops
 from mlopt_core.ir import Op, TensorType, Var
 
@@ -403,18 +402,19 @@ class TestTorchBindingsSurface:
     def test_host_bindings_are_torch_bound(self) -> None:
         """Sink parity — every host-lowerable IR op lowers on torch.
 
-        ``HOST_BINDINGS`` and ``_IR_TO_TORCH`` are the same-role
-        lowering tables for the two sinks; an op the host sink claims
-        must not silently lack a torch binding (delivery would diverge
-        by backend).  Membership uses ``in`` so lazy carrier bindings
-        resolve — ``eye`` binds through a carrier module, not
-        ``_CORE_TORCH_BINDINGS``.
+        ``HOST_BINDINGS`` (vendored as ``mlopt.tensor_surface.
+        host_binding_ops`` since the kit-host-tensor deletion) and
+        ``_IR_TO_TORCH`` are the same-role lowering tables for the two
+        sinks; an op the host sink claims must not silently lack a
+        torch binding (delivery would diverge by backend).  Membership
+        uses ``in`` so lazy carrier bindings resolve — ``eye`` binds
+        through a carrier module, not ``_CORE_TORCH_BINDINGS``.
         """
-        from kit_host_tensor.bindings import HOST_BINDINGS
         from kit_torch.torch_bindings import _IR_TO_TORCH
+        from mlopt.tensor_surface import host_binding_ops
 
         missing = sorted(
-            op for op in HOST_BINDINGS if op not in _IR_TO_TORCH
+            op for op in host_binding_ops() if op not in _IR_TO_TORCH
         )
         unexpected = set(missing) - _TORCH_ALIAS_OPS
         assert not unexpected, (
@@ -433,18 +433,16 @@ class TestHostBindingsSurface:
     """
 
     def test_every_binding_key_is_a_host_op(self) -> None:
-        pytest.importorskip("kit_host_tensor")
-        from kit_host_tensor.bindings import HOST_BINDINGS
+        from mlopt.tensor_surface import host_binding_ops
 
         surface = host_ops()
-        missing = {f"tensor.{k}" for k in HOST_BINDINGS} - set(surface)
+        missing = {f"tensor.{k}" for k in host_binding_ops()} - set(surface)
         assert not missing, (
             f"HOST_BINDINGS names ops the host surface lacks: "
             f"{sorted(missing)}"
         )
 
     def test_binding_count_stable(self) -> None:
-        pytest.importorskip("kit_host_tensor")
-        from kit_host_tensor.bindings import HOST_BINDINGS
+        from mlopt.tensor_surface import host_binding_ops
 
-        assert len(HOST_BINDINGS) == 138
+        assert len(host_binding_ops()) == 138

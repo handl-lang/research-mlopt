@@ -17,7 +17,8 @@ name tables:
   otherwise).
 * **IR-op reality.**  Every IR op name ``ONNX_BINDINGS`` claims must
   resolve to real IR vocabulary: ``opmeta.REGISTRY`` |
-  ``HOST_BINDINGS`` | ``_IR_TO_TORCH`` | ``ATEN_TO_IR`` targets
+  ``host_binding_ops`` (vendored ``HOST_BINDINGS`` keys) |
+  ``_IR_TO_TORCH`` | ``ATEN_TO_IR`` targets
   (set union).  Names with no ``tensor.*`` host port must sit in
   the pinned ``_NON_HOST_OPS`` exception list —
   adapter/ONNX-only vocabulary (``relu_``/``hstack``/``pack``/the
@@ -71,14 +72,14 @@ def _ir_op_oracle() -> frozenset[str]:
     targets are the generated aten→IR classification — together they
     are the IR vocabulary an ONNX map may legitimately name.
     """
-    from kit_host_tensor.bindings import HOST_BINDINGS
     from kit_torch.aten_classify import ATEN_TO_IR
     from kit_torch.torch_bindings import _IR_TO_TORCH
+    from mlopt.tensor_surface import host_binding_ops
     from mlopt_core.opmeta import REGISTRY
 
     return (
         frozenset(REGISTRY)
-        | frozenset(HOST_BINDINGS)
+        | host_binding_ops()
         | frozenset(_IR_TO_TORCH)
         | frozenset(ATEN_TO_IR.values())
     )

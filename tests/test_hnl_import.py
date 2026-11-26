@@ -13,8 +13,9 @@ into ``mlopt_core.ir`` terms.  These tests pin:
   results, malformed syntax and ambiguous spellings all refuse by
   name, never silently;
 * **drift** — every covered op name is a real mlopt IR op
-  (``kit_host_tensor.bindings.HOST_BINDINGS`` plus the three
-  surface ops the executor table does not carry).
+  (``mlopt.tensor_surface.host_binding_ops`` — the vendored
+  ``HOST_BINDINGS`` key set — plus the three surface ops the
+  executor table does not carry).
 """
 
 from __future__ import annotations
@@ -976,15 +977,14 @@ class TestCoveredSetDrift:
     def test_covered_ops_are_ir_ops(self) -> None:
         """Every handler name is a HOST_BINDINGS key or the three
         surface ops the executor table does not carry."""
-        pytest.importorskip("kit_host_tensor")
-        from kit_host_tensor.bindings import HOST_BINDINGS
+        from mlopt.tensor_surface import host_binding_ops
 
         # Tensor-name space: ``batch_norm``/``max_pool`` are the host
         # spellings of IR ``batch_norm``/``max_pool2d`` (neither is a
         # HOST_BINDINGS key), and ``t`` is the derived transpose
         # spelling — every other covered name IS the IR op name.
         extra = {"batch_norm", "max_pool", "t"}
-        known = set(HOST_BINDINGS) | extra
+        known = set(host_binding_ops()) | extra
         unknown = covered_ops() - known
         assert not unknown, (
             f"covered ops with no IR spelling: {unknown}"

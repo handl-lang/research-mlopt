@@ -16,9 +16,14 @@ import json
 from pathlib import Path
 from typing import Any
 
-__all__ = ["host_ops", "surface_json_path"]
+__all__ = [
+    "host_binding_ops",
+    "host_ops",
+    "surface_json_path",
+]
 
 _SURFACE_JSON = Path(__file__).with_name("host_surface.json")
+_BINDINGS_JSON = Path(__file__).with_name("host_bindings_ops.json")
 
 
 def surface_json_path() -> Path:
@@ -32,3 +37,20 @@ def host_ops() -> dict[str, dict[str, Any]]:
     return {
         op["op"]: op for op in data["ops"] if isinstance(op, dict) and isinstance(op.get("op"), str)
     }
+
+
+def host_binding_ops() -> frozenset[str]:
+    """The host-lowerable IR op set — ``HOST_BINDINGS`` keys, pinned.
+
+    ``handl-lang/kit-host-tensor`` (deleted after the P-013 atom
+    migration) carried ``kit_host_tensor.bindings.HOST_BINDINGS`` —
+    the 138-entry IR-op → ``tensor.*`` positional-arg table its
+    Python sink/executor dispatched through ``ffi.rust.resolve``
+    handles.  The callables died with the repo; the *key set* is the
+    cross-stack oracle the drift tests still need ("which IR ops
+    claim a host ``tensor.*`` port"), so it is vendored here as
+    ``host_bindings_ops.json`` — same posture as ``host_surface.json``:
+    bump deliberately, never hand-edit.
+    """
+    data = json.loads(_BINDINGS_JSON.read_text())
+    return frozenset(data["ops"])

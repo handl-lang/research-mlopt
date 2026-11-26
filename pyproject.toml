@@ -22,7 +22,6 @@ dependencies = [
     # kit-onnx repo was dissolved — the onnxruntime extra arms
     # OnnxExecutor.
     "mlopt-kit[onnxruntime]",
-    "kit-host-tensor",
     "mlopt-dtypes",
     "gamekit",
     "benchkit",
@@ -171,10 +170,11 @@ kit-discovery = { git = "https://github.com/handl-lang/kit-discovery.git", tag =
 # now lives in packages/mlopt-kit's Python surface (mlopt_kit.onnx);
 # the [onnxruntime] extra is taken on the dependency line above.
 mlopt-kit = { workspace = true }
-# kit-host-tensor (P3 Step D-1f, bridge-only since the P-010
-# dissolution): the PyO3 tensor.* bridge + HOST_BINDINGS op-set
-# oracle the cross-stack drift tests import — pinned git dep.
-kit-host-tensor = { git = "https://github.com/handl-lang/kit-host-tensor.git", tag = "v0.1.6" }
+# kit-host-tensor dep dropped (P-013 atom migration): the drift tests
+# now read the vendored HOST_BINDINGS key set at
+# packages/mlopt/src/mlopt/host_bindings_ops.json via
+# mlopt.tensor_surface.host_binding_ops — the repo is bridge-only and
+# slated for deletion.
 mlopt-dtypes = { git = "https://github.com/handl-lang/eqsat.git", subdirectory = "packages/mlopt-dtypes", tag = "v0.1.15" }
 # packages/mlopt (P3 Step D-2): the product member — workspace dep so
 # `uv sync` installs it and its `mlopt` console script lands in
@@ -343,8 +343,8 @@ ignore = [
 [tool.ty.environment]
 python-version = "3.13"
 extra-paths = [
-    # mlopt-core/-orchestrator (eqsat), kit_torch (P3 Step D-1e),
-    # gamekit and kit_host_tensor (P3 Step D-1f) resolve through the
+    # mlopt-core/-orchestrator (eqsat), kit_torch (P3 Step D-1e) and
+    # gamekit resolve through the
     # installed git deps — no src path needed.  packages/mlopt (P3
     # Step D-2) is scanned from source under include=["packages"] and
     # resolves its own imports through the installed workspace member.

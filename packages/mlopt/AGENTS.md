@@ -9,10 +9,14 @@ optimization machinery lives here; it lives in the sibling repos:
 - `handl-lang/kit-torch` — the torch-export bridge (`kit_torch`, split
   from this repo's `packages/mlopt-torch` in P3 Step D-1e; a git dep,
   NOT a workspace member)
-- `handl-lang/kit-host-tensor` — the host-tensor backend
-  (`kit_host_tensor`; bridge-only since the P-010 dissolution — the
-  `tensor.*` surface artifact is vendored at
-  `src/mlopt/host_surface.json`, see `tensor_surface.py`)
+- `handl-lang/kit-host-tensor` — RETIRED (P-013 atom migration):
+  the host-tensor backend's Python sink/executor is deleted; tensor
+  execution goes through `handl_host_tensor`'s `ffi.rust.resolve`
+  handles (lib-tensor-native) or `.hnl`/`hnl-run`.  This repo vendors
+  both artifacts it consumed: the `tensor.*` surface at
+  `src/mlopt/host_surface.json` and the `HOST_BINDINGS` op-set
+  oracle at `src/mlopt/host_bindings_ops.json` (see
+  `tensor_surface.py`)
 - this repo also ships the domain packages as workspace members
   (`packages/mlopt-torch` et al.) — the historical graphopt splits
   below remain accurate provenance:

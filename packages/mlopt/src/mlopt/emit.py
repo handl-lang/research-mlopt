@@ -375,9 +375,10 @@ def _resolve_neg1(shape: list[Any], in_term: Any, op: str) -> list[Any]:
 
 
 # ---------------------------------------------------------------------------
-#  Shared builder fragments — ports of kit_host_tensor.bindings helpers
-#  (the host sink's runtime binding table; emit.py's own _OPS is the
-#  .hnl-text lowering — same IR→tensor.* knowledge, different target)
+#  Shared builder fragments — ports of the retired
+#  kit_host_tensor.bindings helpers (the host sink's runtime binding
+#  table; emit.py's own _OPS is the .hnl-text lowering — same
+#  IR→tensor.* knowledge, different target)
 # ---------------------------------------------------------------------------
 
 
