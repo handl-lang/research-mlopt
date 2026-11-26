@@ -173,8 +173,8 @@ mlopt-kit = { workspace = true }
 # kit-host-tensor dep dropped (P-013 atom migration): the drift tests
 # now read the vendored HOST_BINDINGS key set at
 # packages/mlopt/src/mlopt/host_bindings_ops.json via
-# mlopt.tensor_surface.host_binding_ops — the repo is bridge-only and
-# slated for deletion.
+# mlopt.tensor_surface.host_binding_ops — the repo is retired
+# (P-013 atom migration; local clone deleted).
 mlopt-dtypes = { git = "https://github.com/handl-lang/eqsat.git", subdirectory = "packages/mlopt-dtypes", tag = "v0.1.15" }
 # packages/mlopt (P3 Step D-2): the product member — workspace dep so
 # `uv sync` installs it and its `mlopt` console script lands in
